@@ -16,6 +16,7 @@
 #include <unistd.h>           /*  misc. UNIX functions      */
 
 #include "helper.h"           /*  Our own helper functions  */
+#include "helper.c"
 
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +32,7 @@
 
 int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
 
-
+void error(char *msg);
 /*  main()  */
 
 int main(int argc, char *argv[]) {
@@ -93,19 +94,63 @@ int main(int argc, char *argv[]) {
 
     /*  Get string to echo from user  */
 
-    printf("Enter the string to echo: ");
-    fgets(buffer, MAX_LINE, stdin);
+    // printf("Enter the string to echo: ");
+    // fgets(buffer, MAX_LINE, stdin);
     
 
     /*  Send string to echo server, and retrieve response  */
 
-    Writeline(conn_s, buffer, strlen(buffer));
-    Readline(conn_s, buffer, MAX_LINE-1);
+    // Writeline(conn_s, buffer, strlen(buffer));
+    // Readline(conn_s, buffer, MAX_LINE-1);
+
+    char c, *temp;
+    char inp[1];
+    temp = buffer;
+    int sockfd = conn_s;
+   
+    size_t      n, nleft;
+    ssize_t     nwritten;
+
+    n = MAX_LINE-1;
+
+    char new_buff[n];
+
+    while (1) {
+
+        // printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
+        // fgets(inp, 2, stdin);
+
+        // if (*inp == 's') {
+
+            printf("Please enter a string to continue: ");
+            fgets(buffer, MAX_LINE-1, stdin);
+
+        // } else if (*inp == 'q') {
+        //     printf("session closed.");
+        //     break;
+        // } else {
+        //     printf("close");
+        //     break;
+        // }
+
+
+        n = write(sockfd,buffer,strlen(buffer));
+        if (n < 0) 
+             error("ERROR writing to socket");
+        
+        // n = read(sockfd,buffer,MAX_LINE-1);
+
+        if (n < 0) 
+             error("ERROR reading from socket");
+
+        printf("%s\n",buffer);
+        return 0;
+    }
 
 
     /*  Output echoed string  */
 
-    printf("Echo response: %s\n", buffer);
+    // printf("Echo response: %s\n", buffer);
 
     return EXIT_SUCCESS;
 }
@@ -133,3 +178,8 @@ int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
     return 0;
 }
 
+void error(char *msg)
+{
+    perror(msg);
+    exit(0);
+}

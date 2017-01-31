@@ -16,13 +16,12 @@
 #include <unistd.h>           /*  misc. UNIX functions      */
 
 #include "helper.h"           /*  our own helper functions  */
-#include "helper.c"
 
+#include "helper.c"
 #include <string.h>
 
 #include <stdlib.h>
 #include <stdio.h>
-
 
 
 /*  Global constants  */
@@ -107,6 +106,8 @@ int main(int argc, char *argv[]) {
 	    then simply write it back to the same socket.     */
 
 	Readline(conn_s, buffer, MAX_LINE-1);
+
+    printf("%s", buffer);
 	Writeline(conn_s, buffer, strlen(buffer));
 
 
