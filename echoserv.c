@@ -30,11 +30,18 @@
 #define MAX_LINE           (1000)
 
 
+void error(char *msg);
+void handleCurrentConnection(int);
+void findSubstring(char[], char[], int);
+void capitalize(char *word);
+
+
 int main(int argc, char *argv[]) {
     int       list_s;                /*  listening socket          */
     int       conn_s;                /*  connection socket         */
+    int       clilen, pid;
     short int port;                  /*  port number               */
-    struct    sockaddr_in servaddr;  /*  socket address structure  */
+    struct    sockaddr_in servaddr, cli_addr;  /*  socket address structure  */
     char      buffer[MAX_LINE];      /*  character buffer          */
     char     *endptr;                /*  for strtol()              */
 
@@ -91,8 +98,8 @@ int main(int argc, char *argv[]) {
     
     /*  Enter an infinite loop to respond
         to client requests and echo input  */
-
-    while ( 1 ) {
+    clilen = sizeof(cli_addr);
+    while (1) {
 
 	/*  Wait for a connection, then accept() it  */
 
@@ -100,17 +107,14 @@ int main(int argc, char *argv[]) {
 	    fprintf(stderr, "ECHOSERV: Error calling accept()\n");
 	    exit(EXIT_FAILURE);
 	}
-
-
 	/*  Retrieve an input line from the connected socket
 	    then simply write it back to the same socket.     */
 
-	Readline(conn_s, buffer, MAX_LINE-1);
-
-    printf("%s", buffer);
-	Writeline(conn_s, buffer, strlen(buffer));
-
-
+	// Readline(conn_s, buffer, MAX_LINE-1);
+	// Writeline(conn_s, buffer, strlen(buffer));
+    
+    handleCurrentConnection(conn_s);
+    
 	/*  Close the connected socket  */
 
 	if ( close(conn_s) < 0 ) {
@@ -118,4 +122,54 @@ int main(int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
     }
+}
+
+void handleCurrentConnection(int sockfd) {
+
+    int n;
+    char buffer[MAX_LINE];
+    char new_buff[MAX_LINE-1];
+    char num[2];
+          
+    n = read(sockfd,buffer,MAX_LINE-1);
+    if (n < 0) error("ERROR reading from socket");
+
+    findSubstring(buffer, buffer, 6);
+
+    capitalize(buffer);
+
+    int length = strlen(buffer);
+
+    sprintf(num, "%d", length);
+    strcat(num, buffer);
+
+    printf("%s\n",num);
+
+    n = write(sockfd, num, strlen(num));
+
+    if (n < 0) error("ERROR writing to socket");
+}
+
+void error(char *msg)
+{
+    perror(msg);
+    exit(1);
+}
+
+void capitalize(char buff[]) {
+    int i = 0;
+    while (i<strlen(buff)) {
+        buff[i] = toupper(buff[i]);
+        i++;
+    }
+}
+
+void findSubstring(char g[], char p[], int diff) {
+
+    int length = strlen(g)-8;
+    int i;
+    for (i=0; i<length; i++) {
+        g[i] = p[i+diff-1];
+    }
+    g[i] = '\0';
 }

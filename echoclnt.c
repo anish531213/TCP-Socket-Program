@@ -87,8 +87,10 @@ int main(int argc, char *argv[]) {
     /*  connect() to the remote echo server  */
 
     if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
-	printf("ECHOCLNT: Error calling connect()\n");
-	exit(EXIT_FAILURE);
+    	printf("ECHOCLNT: Error calling connect()\n");
+    	exit(EXIT_FAILURE);
+    } else {
+        printf("Connection started.\n");
     }
 
 
@@ -105,26 +107,29 @@ int main(int argc, char *argv[]) {
 
     char c, *temp;
     char inp[1];
+    char front[MAX_LINE];
+    char back[MAX_LINE-1];
     temp = buffer;
     int sockfd = conn_s;
    
-    size_t      n, nleft;
+    size_t      n, ns, nleft;
     ssize_t     nwritten;
-
-    n = MAX_LINE-1;
-
-    char new_buff[n];
 
     while (1) {
 
         // printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
-        // fgets(inp, 2, stdin);
+        // scanf("%c", inp);
 
         // if (*inp == 's') {
 
             printf("Please enter a string to continue: ");
-            fgets(buffer, MAX_LINE-1, stdin);
+            fgets(buffer, MAX_LINE, stdin);
 
+            strcat(front, "CAP\\n");
+            strcat(back, buffer);
+            strcat(back, "\\n");
+            strcat(front, back);
+        
         // } else if (*inp == 'q') {
         //     printf("session closed.");
         //     break;
@@ -134,19 +139,26 @@ int main(int argc, char *argv[]) {
         // }
 
 
-        n = write(sockfd,buffer,strlen(buffer));
+        n = write(sockfd,front,strlen(front));
         if (n < 0) 
              error("ERROR writing to socket");
         
-        // n = read(sockfd,buffer,MAX_LINE-1);
+        ns = read(sockfd,buffer,MAX_LINE-1);
 
-        if (n < 0) 
+        if (ns < 0) 
              error("ERROR reading from socket");
 
         printf("%s\n",buffer);
-        return 0;
+        break;
     }
 
+    if ( close(conn_s) < 0 ) {
+        fprintf(stderr, "ECHOSERV: Error calling close()\n");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("Connection closed.\n");
+    }
+    
 
     /*  Output echoed string  */
 
