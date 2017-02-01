@@ -1,0 +1,302 @@
+From 58a2bc180d6ae9bc0d23f916b8cc1429af91a83d Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Wed, 1 Feb 2017 06:10:43 -0500
+Subject: [PATCH 6/9] Reading and writing from file
+
+---
+ echoclient | Bin 13832 -> 13832 bytes
+ echoclnt.c |  36 ++++++++++++++++++++++++++----------
+ echoserv   | Bin 13968 -> 14208 bytes
+ echoserv.c |  54 ++++++++++++++++++++++++++++++++++++++++++++++--------
+ 4 files changed, 72 insertions(+), 18 deletions(-)
+
+diff --git a/echoclient b/echoclient
+index ab2fb4090fc069bb0f5cacad841a2d9229c7e3d2..fe5abe894d7304550dbf631d7e2234982e5005bf 100755
+GIT binary patch
+delta 1659
+zcmZWqe@q*76#w?x@}pr~do76?0_O%4vW-DCBu<yL5%5qF>lC*bf7P{YjkUnq{(*_I
+z$<A=rTQFZp_`?`t=AvYp#YS*AC=f#<gJn82X6}!<$aWKB=7!KI^L+1H+RS)K@4b8P
+z^FH6t`+nbD`$B!8{_~cB62h*5lJ_o73iI~N)4biyoOwGPF<f-q`u(F%4lM1N-u33`
+zmlk}T6UWr@=EM-UkK?*+iJK;`xzH-OiIkciwk4jhxVRo~5h2RNnOnLpDPNod<Co&5
+z%4*=0l%{n3l%%Q}Ce^{qXyObLm$5)eX>XYT7nd^#^#%mTQH`XWlOTIxUDw+cd5#sz
+znB_;w(W$5-Sq&nzmA`eJt`~_FKSHK=0`H`|T8f)b*+rn39^VR7lLojYy#jS_a`aeN
+zU;!&e;RleEb`?0<Q!*wv!jG}F_^~O-oWzVG3y=YYOuRaXIH`BWBq={&^*ta^p6YQV
+z52K!)P?5ytv^t1G<A{#SsEaKs^(g0{sDc%BJCYw`QC_ZS9lbe>-TVv7Wibs#k<(D0
+zVNv8u;3qEw=1XiqyBA7Q@;o*U*K&EB`Ks5T3}R3k;ztL+0jF=kyaTknsyze+eKLj)
+zPvG4WTi{1!%smp}<!eBalFvgN>5_FY8ku!I2SLb=DaMY@-Rvk;y9B5lIeodfmiyy2
+z?Js_^XE@W36?X+TVEVSM&mJ}7qvd)9Y*<!8l$SLoVKFOVUrxdqC_)LCViM5#pM<M`
+z%1HnK^e3s?WLzpmnp;|%+EZ@R^Wj-{9)XEu8?4H8c&M2JT}v~;Cx8YHAS*Zp-DL$Y
+zZ_ldjirJEH<n&zt%yKlT<^nSq*nbzx5eP`i49*3}iL<kWL5B_5%Q7-S9jYp(d$Q^A
+zYex1m0OoiGQ@}7Aqmj~zA=<w&94W06p5!U^3M}!NS3rdQ%)A0apiKJ*5SbBOMDH}l
+z=GJtb9kUdVrTx+a4_4C8_<Zi?H9E$78+RiPNQl-39$(%_h-a_oS&yQ7+C0y+s+BJm
+ziKI<Zx1)W!MOkf8zOVnOwPs1`{jETnzGKuDRufNIOAT&k#3@EQ#9+8H78QMBBpM7K
+z*d{uo|B1E-Ljlnj_KVIg7VnA$qdTz)Lg)*&tq*%c0be8_2Ex(6Au)O|AhLq6@3jDO
+zM*?9#pd*1uB-jxa_lG(n0e>xFme5{XlV=6??|mTiuj+aT>~qlk*I;X)xnIDJfHlEL
+z#_s4kj^?Le8^JDu^@DAsg@Tj2@h5c&wVZc_z9Lj{$5!b(LK(MfjgAOq_kRG4XW_F(
+zJjK?xxkoqU8D~vJ`30mDLdW6PLaz(u1|Kc7mm3b!8vA4Bei#QXam4;^0kxIw<{Uy|
+zPg#T6;Go}bDKYXyL|bYl*)KJ4<Srwz5z&$OZp*5H>o1{ml_xl>Ko3<--q&q&Gt}k{
+z>{lROAjQNX(8ryVoX18j)svhk(7EbnZrDbJns)B2De-zuxPZHoPk*hiwK(8AgBO%+
+mb~V_<jYm;nQF4+7T{|pURq+4up{v0nI@~M^qOQ2AjQ;|KnGYHO
+
+delta 1265
+zcmZuxZ)h837=QC7>0)SecgY1dE$P{{U8=0EQ7RRNiLUy#ZnI4HM?VcI6}9+bRIq+Y
+zp*hKM9AvyH6cLFcGDSo<wn^3|>6i=KU{p8#u=$6T*&S|!v5qdCt>^Q+S%!!QchCDi
+z&+qp<zvp@HE<2VT%Pj;m5hAWk<nX0Zcvh+JW|gE^%qsjV&n5ND(sJ|r(Q7-byZY}x
+zZaq?%2%j6YXXpV+mnHkQZ`l7(PEHb5o!4ahrC@@lw>1-D%>A<Ly39Db0A_@lzRo!0
+zWX3?Px56x|hCyrk78+AvOdSbE)mfu}Gxa*cB6nQ3h-#Q|o<a1&n(K}l`l2A}7?qBZ
+zOl4dx9{~~0oxfa{uQh8O4gjX+@JS}(%=CX7(ICZq@o`91^1!3KAoFC4n%1y@j9$0_
+zQgxOf$7of@0436KQA;{rfymbwG4ytbfI=bOnnoO(I_YD^&&b{g0`*E-Efbic^9(S`
+zSkBo7erO!grjEKqQI<B&1F1uhCe(5qNlgz(Yq%Oh-|c%y*R>iLLk~R2V(2#@S5?1?
+zox)W<2<Y!{<w!uj-e!uBHS95_5yNJrW7Ah)k<I%tS;*-JSXM{Z<lGfL7wVzA@9~?V
+zm(%O@k}?VhjWO7s&iHW~1SJjk21FSrp*8fFLJpi25Pn@1T4kIMG!Dh;(c(3)I8J~(
+zCdm3m0lD8?)yV@fXTBz;1fUhz>J@Q{?<n<C)S$omDQ0mv8Awx~^6R+z5`DwK5_4eY
+zd$kev<Wu4W9QQkKuJY~5@X+@VFN--{hSg|~)Rw^=$))zE_N5FrwKw(ZPOI~`7LDv>
+z)>gEy3>qtg#!tPMcXt25rfvk-{JPiKRkMFkT0MMw<Pkm-Nv3>vUH4<iGY<WZfqfgY
+zp90$t%C3Sfg7v{0;jX)G2iT|ocHJFdN5GDNy~sDITPUgV=hPm0aD^XIyXYr1{*fA^
+zyH<HojXnAeWE_AIl2l0kkUrni<V|{;Hv~v4xITyb0$)|zJlFZAXq%_T`=c-VHK;}H
+z!_morU5K_)uEd_DdD-3*>+=uh;j{Vg<s}j+{I6doji1B6IbNa=nSZ)DYA<bG^w7x&
+zKil~Q&B^>wSLxwpsa~M{KH~&5873i;m-*0^5<MaDV7x>NGCv!Cfod`jcaPEmul+&y
+zy8-$}6aTZfC)m&kl=eiQ(vVib&lav${#N3NU_%)EwLVMq1?6y31m&>3nCSBU10`ZK
+Ag#Z8m
+
+diff --git a/echoclnt.c b/echoclnt.c
+index 6f8789f..52ab653 100644
+--- a/echoclnt.c
++++ b/echoclnt.c
+@@ -117,10 +117,13 @@ int main(int argc, char *argv[]) {
+ 
+     while (1) {
+ 
+-        // printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
+-        // scanf("%c", inp);
++        printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
++        
++        int j = 0;
++        while ((c = getchar()) != '\n')
++            inp[j++] = c;
+ 
+-        // if (*inp == 's') {
++        if (*inp == 's') {
+ 
+             int i = 0;
+             printf("Please enter a string to continue: ");
+@@ -133,13 +136,26 @@ int main(int argc, char *argv[]) {
+             strcat(front, back);
+             front[strlen(front)] = '\n';
+         
+-        // } else if (*inp == 'q') {
+-        //     printf("session closed.");
+-        //     break;
+-        // } else {
+-        //     printf("close");
+-        //     break;
+-        // }
++        } else if (*inp == 't') {
++
++            int i = 0;
++            printf("Please enter the file name to send: ");
++            while ((c = getchar()) != '\n')
++                buffer[i++] = c;
++
++            strcpy(front, "FILE\\n");
++            strcpy(back, buffer);
++            strcat(back, "\\n");
++            strcat(front, back);
++            front[strlen(front)] = '\n';
++        
++        } else if (*inp == 'q') {
++            printf("session closed.");
++            break;
++        } else {
++            printf("close");
++            break;
++        }
+         // printf("%s\n", front);
+ 
+         n = write(sockfd,front,strlen(front));
+diff --git a/echoserv b/echoserv
+index ac493c25cfb7219f1e10c4ac02203321ab20df03..0937d0f4b8cc68066d6cc80500307b415c7553d7 100755
+GIT binary patch
+delta 4177
+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
+
+delta 3371
+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
+EKO!2W*8l(j
+
+diff --git a/echoserv.c b/echoserv.c
+index ad63f64..e131eab 100644
+--- a/echoserv.c
++++ b/echoserv.c
+@@ -33,6 +33,7 @@
+ void error(char *msg);
+ void handleCurrentConnection(int);
+ void findSubstring(char[], char[], int);
++void findFileSubstring(char[], char[], int);
+ void capitalize(char *word);
+ 
+ 
+@@ -129,24 +130,47 @@ void handleCurrentConnection(int sockfd) {
+     int n;
+     char buffer[MAX_LINE];
+     char new_buff[MAX_LINE-1];
+-    char num[2];
++    char send_buff[MAX_LINE-1];
++    FILE *fptr;
++    // char send_buff2[MAX_LINE];
+ 
+     Readline(sockfd, buffer, MAX_LINE-1);
+     // n = read(sockfd,buffer,MAX_LINE-1);
+     // if (n < 0) error("ERROR reading from socket");
+ 
+-    findSubstring(buffer, buffer, 6);
++    if ((buffer[0] == 'C') && (buffer[1] == 'A') && (buffer[2] == 'P')) {
+ 
+-    capitalize(buffer);
++        findSubstring(buffer, buffer, 6);
+ 
+-    int length = strlen(buffer);
++        capitalize(buffer);
+ 
+-    sprintf(num, "%d", length);
+-    strcat(num, buffer);
++        int length = strlen(buffer);
+ 
+-    printf("%s\n",buffer);
++        sprintf(send_buff, "%d", length);
++        strcat(send_buff, "\n");
++        strcat(send_buff, buffer);
++        //strcpy(new_buff, num);
+ 
+-    n = write(sockfd, buffer, strlen(buffer));
++    } else if (buffer[0] == 'F') {
++        
++        findFileSubstring(buffer, buffer, 7);
++
++        if ( access(buffer, F_OK) != -1) {    // Checks if the file is present 
++            fptr = fopen(buffer, "r");
++            while(!feof(fptr)) {
++                fgets(new_buff, MAX_LINE-1, fptr);
++                strcat(send_buff, new_buff);
++            }
++
++        } else {
++            strcpy(send_buff, "9\nNOT FOUND");
++        }
++
++    }
++
++    printf("%s\n", send_buff);
++
++    n = write(sockfd, send_buff, strlen(send_buff));
+ 
+     if (n < 0) error("ERROR writing to socket");
+ }
+@@ -177,4 +201,18 @@ void findSubstring(char g[], char p[], int diff) {
+         g[i] = p[i+diff-1];
+     }
+     g[i] = '\0';
++}
++
++void findFileSubstring(char g[], char p[], int diff) {
++
++    int length = strlen(p)-8;
++    int i;
++    for (i=0; i<length-1; i++) {
++        if (g[i] == '\n'){
++            g[i] = '\0';
++        }
++
++        g[i] = p[i+diff-1];
++    }
++    g[i] = '\0';
+ }
+\ No newline at end of file
+-- 
+2.1.4
+

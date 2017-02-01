@@ -1,0 +1,768 @@
+From c98ff34cc886bffc674b47054ab593b5789c6f1c Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Mon, 30 Jan 2017 21:00:44 -0500
+Subject: [PATCH 1/9] Getting Started
+
+---
+ Makefile          |  17 +++++++
+ README            |  41 +++++++++++++++++
+ client/Makefile   |   8 ++++
+ client/README     |  40 ++++++++++++++++
+ client/echoclnt.c | 135 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ client/helper.c   |  81 ++++++++++++++++++++++++++++++++
+ client/helper.h   |  33 +++++++++++++
+ echoserv          | Bin 0 -> 13552 bytes
+ echoserv.c        | 120 ++++++++++++++++++++++++++++++++++++++++++++++++
+ helper.c          |  81 ++++++++++++++++++++++++++++++++
+ helper.h          |  33 +++++++++++++
+ 11 files changed, 589 insertions(+)
+ create mode 100644 Makefile
+ create mode 100644 README
+ create mode 100644 client/Makefile
+ create mode 100644 client/README
+ create mode 100644 client/echoclnt.c
+ create mode 100644 client/helper.c
+ create mode 100644 client/helper.h
+ create mode 100755 echoserv
+ create mode 100644 echoserv.c
+ create mode 100644 helper.c
+ create mode 100644 helper.h
+
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..6c7eeca
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,17 @@
++echoserv: echoserv.o helper.o
++	gcc -o echoserv echoserv.o helper.o -Wall
++
++echoserv.o: echoserv.c helper.h
++	gcc -o echoserv.o echoserv.c -c -ansi -pedantic -Wall
++
++helper.o: helper.c helper.h
++	gcc -o helper.o helper.c -c -ansi -pedantic -Wall
++
++
++
++
++
++
++
++
++
+diff --git a/README b/README
+new file mode 100644
+index 0000000..e5086e6
+--- /dev/null
++++ b/README
+@@ -0,0 +1,41 @@
++ECHOSERV
++========
++(c) Paul Griffiths, 1999
++Email: mail@paulgriffiths.net
++
++
++Function
++========
++
++Demonstrates a simple TCP/IP echo server, using the
++Berkeley Sockets API. 
++
++
++Usage
++=====
++
++Example of usage:
++
++    [paul@localhost paul]$ ./echoserv 5555 &
++    [paul@localhost paul]$ telnet localhost 5555
++    Trying 127.0.0.1...
++    Connected to localhost.
++    Escape character is '^]'.
++    Echo this line for me, please.
++    Echo this line for me, please.
++    Connection closed by foreign host.
++    [paul@localhost paul]$
++
++
++Installation
++============
++
++If your system supports make, simply type:
++
++    make
++
++at the command line. Otherwise, compile and link echoserv.c and
++help.c in the usual way to create the executable. You may or may
++not need to link in additional libraries for the sockets functions;
++check your compiler's documentation.
++
+diff --git a/client/Makefile b/client/Makefile
+new file mode 100644
+index 0000000..1675cf1
+--- /dev/null
++++ b/client/Makefile
+@@ -0,0 +1,8 @@
++echoclnt: echoclnt.o helper.o
++	gcc -o echoclnt echoclnt.o helper.o -Wall
++
++echoclnt.o: echoclnt.c helper.h
++	gcc -o echoclnt.o echoclnt.c -c -ansi -pedantic -Wall
++
++helper.o: helper.c helper.h
++	gcc -o helper.o helper.c -c -ansi -pedantic -Wall
+diff --git a/client/README b/client/README
+new file mode 100644
+index 0000000..cd869c0
+--- /dev/null
++++ b/client/README
+@@ -0,0 +1,40 @@
++ECHOCLNT
++========
++(c) Paul Griffiths, 1999
++Email: mail@paulgriffiths.net
++
++
++Function
++========
++
++Demonstrates a simple TCP/IP echo client, using the
++Berkeley Sockets API. This program is meant to work
++in conjunction with ECHOSERV, a simple TCP/IP echo server
++also available from this site.
++
++
++Usage
++=====
++
++Example of usage:
++
++    [paul@localhost paul]$ ./echoclnt -a 127.0.0.1 -p 3357
++
++Switches:
++
++	-p : specifies remote port of time server
++	-a : specifies remote address of time server
++
++
++Installation
++============
++
++If your system supports make, simply type:
++
++    make
++
++at the command line. Otherwise, compile and link echoclnt.c
++and helper.c in the usual way to create the executable. You may or may
++not need to link in additional libraries for the sockets
++functions; check your compiler's documentation.
++
+diff --git a/client/echoclnt.c b/client/echoclnt.c
+new file mode 100644
+index 0000000..1fe3d7d
+--- /dev/null
++++ b/client/echoclnt.c
+@@ -0,0 +1,135 @@
++/*
++
++  ECHOCLNT.C
++  ==========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++  
++  Simple TCP/IP echo client.
++
++*/
++
++
++#include <sys/socket.h>       /*  socket definitions        */
++#include <sys/types.h>        /*  socket types              */
++#include <arpa/inet.h>        /*  inet (3) funtions         */
++#include <unistd.h>           /*  misc. UNIX functions      */
++
++#include "helper.h"           /*  Our own helper functions  */
++
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++
++
++/*  Global constants  */
++
++#define MAX_LINE           (1000)
++
++
++/*  Function declarations  */
++
++int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
++
++
++/*  main()  */
++
++int main(int argc, char *argv[]) {
++
++    int       conn_s;                /*  connection socket         */
++    short int port;                  /*  port number               */
++    struct    sockaddr_in servaddr;  /*  socket address structure  */
++    char      buffer[MAX_LINE];      /*  character buffer          */
++    char     *szAddress;             /*  Holds remote IP address   */
++    char     *szPort;                /*  Holds remote port         */
++    char     *endptr;                /*  for strtol()              */
++
++
++    /*  Get command line arguments  */
++
++    ParseCmdLine(argc, argv, &szAddress, &szPort);
++
++
++    /*  Set the remote port  */
++
++    port = strtol(szPort, &endptr, 0);
++    if ( *endptr ) {
++	printf("ECHOCLNT: Invalid port supplied.\n");
++	exit(EXIT_FAILURE);
++    }
++	
++
++    /*  Create the listening socket  */
++
++    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
++	fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
++	exit(EXIT_FAILURE);
++    }
++
++
++    /*  Set all bytes in socket address structure to
++        zero, and fill in the relevant data members   */
++
++    memset(&servaddr, 0, sizeof(servaddr));
++    servaddr.sin_family      = AF_INET;
++    servaddr.sin_port        = htons(port);
++
++
++    /*  Set the remote IP address  */
++
++    if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
++	printf("ECHOCLNT: Invalid remote IP address.\n");
++	exit(EXIT_FAILURE);
++    }
++
++    
++    /*  connect() to the remote echo server  */
++
++    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
++	printf("ECHOCLNT: Error calling connect()\n");
++	exit(EXIT_FAILURE);
++    }
++
++
++    /*  Get string to echo from user  */
++
++    printf("Enter the string to echo: ");
++    fgets(buffer, MAX_LINE, stdin);
++    
++
++    /*  Send string to echo server, and retrieve response  */
++
++    Writeline(conn_s, buffer, strlen(buffer));
++    Readline(conn_s, buffer, MAX_LINE-1);
++
++
++    /*  Output echoed string  */
++
++    printf("Echo response: %s\n", buffer);
++
++    return EXIT_SUCCESS;
++}
++
++
++int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
++
++    int n = 1;
++
++    while ( n < argc ) {
++	if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
++	    *szAddress = argv[++n];
++	}
++	else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
++	    *szPort = argv[++n];
++	}
++	else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
++	    printf("Usage:\n\n");
++	    printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
++	    exit(EXIT_SUCCESS);
++	}
++	++n;
++    }
++
++    return 0;
++}
++
+diff --git a/client/helper.c b/client/helper.c
+new file mode 100644
+index 0000000..3d34729
+--- /dev/null
++++ b/client/helper.c
+@@ -0,0 +1,81 @@
++/*
++
++  HELPER.C
++  ========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++
++  Implementation of sockets helper functions.
++
++  Many of these functions are adapted from, inspired by, or 
++  otherwise shamelessly plagiarised from "Unix Network 
++  Programming", W Richard Stevens (Prentice Hall).
++
++*/
++
++#include "helper.h"
++#include <sys/socket.h>
++#include <unistd.h>
++#include <errno.h>
++
++
++/*  Read a line from a socket  */
++
++ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
++    ssize_t n, rc;
++    char    c, *buffer;
++
++    buffer = vptr;
++
++    for ( n = 1; n < maxlen; n++ ) {
++	
++	if ( (rc = read(sockd, &c, 1)) == 1 ) {
++	    *buffer++ = c;
++	    if ( c == '\n' )
++		break;
++	}
++	else if ( rc == 0 ) {
++	    if ( n == 1 )
++		return 0;
++	    else
++		break;
++	}
++	else {
++	    if ( errno == EINTR )
++		continue;
++	    return -1;
++	}
++    }
++
++    *buffer = 0;
++    return n;
++}
++
++
++/*  Write a line to a socket  */
++
++ssize_t Writeline(int sockd, const void *vptr, size_t n) {
++    size_t      nleft;
++    ssize_t     nwritten;
++    const char *buffer;
++
++    buffer = vptr;
++    nleft  = n;
++
++    while ( nleft > 0 ) {
++	if ( (nwritten = write(sockd, buffer, nleft)) <= 0 ) {
++	    if ( errno == EINTR )
++		nwritten = 0;
++	    else
++		return -1;
++	}
++	nleft  -= nwritten;
++	buffer += nwritten;
++    }
++
++    return n;
++}
++
++
++
++
+diff --git a/client/helper.h b/client/helper.h
+new file mode 100644
+index 0000000..250657f
+--- /dev/null
++++ b/client/helper.h
+@@ -0,0 +1,33 @@
++/*
++
++  HELPER.H
++  ========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++
++  Interface to socket helper functions. 
++
++  Many of these functions are adapted from, inspired by, or 
++  otherwise shamelessly plagiarised from "Unix Network 
++  Programming", W Richard Stevens (Prentice Hall).
++
++*/
++
++
++#ifndef PG_SOCK_HELP
++#define PG_SOCK_HELP
++
++
++#include <unistd.h>             /*  for ssize_t data type  */
++
++#define LISTENQ        (1024)   /*  Backlog for listen()   */
++
++
++/*  Function declarations  */
++
++ssize_t Readline(int fd, void *vptr, size_t maxlen);
++ssize_t Writeline(int fc, const void *vptr, size_t maxlen);
++
++
++#endif  /*  PG_SOCK_HELP  */
++
+diff --git a/echoserv b/echoserv
+new file mode 100755
+index 0000000000000000000000000000000000000000..5a5d06f10bb6185fd1c1db8266432f5d77c0a4fb
+GIT binary patch
+literal 13552
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/echoserv.c b/echoserv.c
+new file mode 100644
+index 0000000..724fcca
+--- /dev/null
++++ b/echoserv.c
+@@ -0,0 +1,120 @@
++/*
++
++  ECHOSERV.C
++  ==========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++  
++  Simple TCP/IP echo server.
++
++*/
++
++
++#include <sys/socket.h>       /*  socket definitions        */
++#include <sys/types.h>        /*  socket types              */
++#include <arpa/inet.h>        /*  inet (3) funtions         */
++#include <unistd.h>           /*  misc. UNIX functions      */
++
++#include "helper.h"           /*  our own helper functions  */
++#include "helper.c"
++
++#include <string.h>
++
++#include <stdlib.h>
++#include <stdio.h>
++
++
++
++/*  Global constants  */
++
++#define ECHO_PORT          (2002)
++#define MAX_LINE           (1000)
++
++
++int main(int argc, char *argv[]) {
++    int       list_s;                /*  listening socket          */
++    int       conn_s;                /*  connection socket         */
++    short int port;                  /*  port number               */
++    struct    sockaddr_in servaddr;  /*  socket address structure  */
++    char      buffer[MAX_LINE];      /*  character buffer          */
++    char     *endptr;                /*  for strtol()              */
++
++
++    /*  Get port number from the command line, and
++        set to default port if no arguments were supplied  */
++
++    if ( argc == 2 ) {
++	port = strtol(argv[1], &endptr, 0);
++	if ( *endptr ) {
++	    fprintf(stderr, "ECHOSERV: Invalid port number.\n");
++	    exit(EXIT_FAILURE);
++	}
++    }
++    else if ( argc < 2 ) {
++	port = ECHO_PORT;
++    }
++    else {
++	fprintf(stderr, "ECHOSERV: Invalid arguments.\n");
++	exit(EXIT_FAILURE);
++    }
++
++	
++    /*  Create the listening socket  */
++
++    if ( (list_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
++	fprintf(stderr, "ECHOSERV: Error creating listening socket.\n");
++	exit(EXIT_FAILURE);
++    }
++
++
++    /*  Set all bytes in socket address structure to
++        zero, and fill in the relevant data members   */
++
++    memset(&servaddr, 0, sizeof(servaddr));
++    servaddr.sin_family      = AF_INET;
++    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
++    servaddr.sin_port        = htons(port);
++
++
++    /*  Bind our socket addresss to the 
++	listening socket, and call listen()  */
++
++    if ( bind(list_s, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0 ) {
++	fprintf(stderr, "ECHOSERV: Error calling bind()\n");
++	exit(EXIT_FAILURE);
++    }
++
++    if ( listen(list_s, LISTENQ) < 0 ) {
++	fprintf(stderr, "ECHOSERV: Error calling listen()\n");
++	exit(EXIT_FAILURE);
++    }
++
++    
++    /*  Enter an infinite loop to respond
++        to client requests and echo input  */
++
++    while ( 1 ) {
++
++	/*  Wait for a connection, then accept() it  */
++
++	if ( (conn_s = accept(list_s, NULL, NULL) ) < 0 ) {
++	    fprintf(stderr, "ECHOSERV: Error calling accept()\n");
++	    exit(EXIT_FAILURE);
++	}
++
++
++	/*  Retrieve an input line from the connected socket
++	    then simply write it back to the same socket.     */
++
++	Readline(conn_s, buffer, MAX_LINE-1);
++	Writeline(conn_s, buffer, strlen(buffer));
++
++
++	/*  Close the connected socket  */
++
++	if ( close(conn_s) < 0 ) {
++	    fprintf(stderr, "ECHOSERV: Error calling close()\n");
++	    exit(EXIT_FAILURE);
++	}
++    }
++}
+diff --git a/helper.c b/helper.c
+new file mode 100644
+index 0000000..3d34729
+--- /dev/null
++++ b/helper.c
+@@ -0,0 +1,81 @@
++/*
++
++  HELPER.C
++  ========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++
++  Implementation of sockets helper functions.
++
++  Many of these functions are adapted from, inspired by, or 
++  otherwise shamelessly plagiarised from "Unix Network 
++  Programming", W Richard Stevens (Prentice Hall).
++
++*/
++
++#include "helper.h"
++#include <sys/socket.h>
++#include <unistd.h>
++#include <errno.h>
++
++
++/*  Read a line from a socket  */
++
++ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
++    ssize_t n, rc;
++    char    c, *buffer;
++
++    buffer = vptr;
++
++    for ( n = 1; n < maxlen; n++ ) {
++	
++	if ( (rc = read(sockd, &c, 1)) == 1 ) {
++	    *buffer++ = c;
++	    if ( c == '\n' )
++		break;
++	}
++	else if ( rc == 0 ) {
++	    if ( n == 1 )
++		return 0;
++	    else
++		break;
++	}
++	else {
++	    if ( errno == EINTR )
++		continue;
++	    return -1;
++	}
++    }
++
++    *buffer = 0;
++    return n;
++}
++
++
++/*  Write a line to a socket  */
++
++ssize_t Writeline(int sockd, const void *vptr, size_t n) {
++    size_t      nleft;
++    ssize_t     nwritten;
++    const char *buffer;
++
++    buffer = vptr;
++    nleft  = n;
++
++    while ( nleft > 0 ) {
++	if ( (nwritten = write(sockd, buffer, nleft)) <= 0 ) {
++	    if ( errno == EINTR )
++		nwritten = 0;
++	    else
++		return -1;
++	}
++	nleft  -= nwritten;
++	buffer += nwritten;
++    }
++
++    return n;
++}
++
++
++
++
+diff --git a/helper.h b/helper.h
+new file mode 100644
+index 0000000..250657f
+--- /dev/null
++++ b/helper.h
+@@ -0,0 +1,33 @@
++/*
++
++  HELPER.H
++  ========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++
++  Interface to socket helper functions. 
++
++  Many of these functions are adapted from, inspired by, or 
++  otherwise shamelessly plagiarised from "Unix Network 
++  Programming", W Richard Stevens (Prentice Hall).
++
++*/
++
++
++#ifndef PG_SOCK_HELP
++#define PG_SOCK_HELP
++
++
++#include <unistd.h>             /*  for ssize_t data type  */
++
++#define LISTENQ        (1024)   /*  Backlog for listen()   */
++
++
++/*  Function declarations  */
++
++ssize_t Readline(int fd, void *vptr, size_t maxlen);
++ssize_t Writeline(int fc, const void *vptr, size_t maxlen);
++
++
++#endif  /*  PG_SOCK_HELP  */
++
+-- 
+2.1.4
+

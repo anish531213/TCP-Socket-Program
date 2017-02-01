@@ -1,0 +1,137 @@
+From c1e0823ae80f9bbfd9958ab4110a95820de22d45 Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Wed, 1 Feb 2017 02:47:11 -0500
+Subject: [PATCH 5/9] Modified ParseCmdLine to eliminate -a and -p while using
+ echoclnt
+
+---
+ echoclient | Bin 13888 -> 13832 bytes
+ echoclnt.c |  36 ++++++++++++++++++++----------------
+ 2 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/echoclient b/echoclient
+index 45bd87c527ebdf057e15e8413acc97c4bb25efd2..ab2fb4090fc069bb0f5cacad841a2d9229c7e3d2 100755
+GIT binary patch
+delta 2634
+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
+Q!r96yYjb96Vd8YpzZ!M81poj5
+
+delta 3091
+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
+XwfrR#VJBN!&F^Y^Y%gM08>{~d+<<+F
+
+diff --git a/echoclnt.c b/echoclnt.c
+index 0ab50fd..6f8789f 100644
+--- a/echoclnt.c
++++ b/echoclnt.c
+@@ -173,22 +173,26 @@ int main(int argc, char *argv[]) {
+ 
+ int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
+ 
+-    int n = 1;
+-
+-    while ( n < argc ) {
+-	if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
+-	    *szAddress = argv[++n];
+-	}
+-	else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
+-	    *szPort = argv[++n];
+-	}
+-	else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
+-	    printf("Usage:\n\n");
+-	    printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
+-	    exit(EXIT_SUCCESS);
+-	}
+-	++n;
+-    }
++    *szAddress = argv[1];
++
++    *szPort = argv[2];
++
++ //    int n = 1;
++
++ //    while ( n < argc ) {
++	// if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
++	    
++	// }
++	// else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
++	    
++	// }
++	// else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
++	//     printf("Usage:\n\n");
++	//     printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
++	//     exit(EXIT_SUCCESS);
++	// }
++	// ++n;
++ //    }
+ 
+     return 0;
+ }
+-- 
+2.1.4
+

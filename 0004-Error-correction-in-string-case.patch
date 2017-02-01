@@ -1,0 +1,202 @@
+From a6ee2ddf7018c35a4dcb72e234a3f4f562b5ab52 Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Wed, 1 Feb 2017 01:51:17 -0500
+Subject: [PATCH 4/9] Error correction in string case
+
+---
+ echoclient | Bin 13880 -> 13888 bytes
+ echoclnt.c |  11 +++++++----
+ echoserv   | Bin 13968 -> 13968 bytes
+ echoserv.c |  17 +++++++++++------
+ 4 files changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/echoclient b/echoclient
+index a4e033e81260e24a57d604c8617937ed3b4459b8..45bd87c527ebdf057e15e8413acc97c4bb25efd2 100755
+GIT binary patch
+delta 2443
+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
+
+delta 2500
+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
+
+diff --git a/echoclnt.c b/echoclnt.c
+index e452f60..0ab50fd 100644
+--- a/echoclnt.c
++++ b/echoclnt.c
+@@ -122,13 +122,16 @@ int main(int argc, char *argv[]) {
+ 
+         // if (*inp == 's') {
+ 
++            int i = 0;
+             printf("Please enter a string to continue: ");
+-            fgets(buffer, MAX_LINE, stdin);
++            while ((c = getchar()) != '\n')
++                buffer[i++] = c;
+ 
+-            strcat(front, "CAP\\n");
+-            strcat(back, buffer);
++            strcpy(front, "CAP\\n");
++            strcpy(back, buffer);
+             strcat(back, "\\n");
+             strcat(front, back);
++            front[strlen(front)] = '\n';
+         
+         // } else if (*inp == 'q') {
+         //     printf("session closed.");
+@@ -137,7 +140,7 @@ int main(int argc, char *argv[]) {
+         //     printf("close");
+         //     break;
+         // }
+-
++        // printf("%s\n", front);
+ 
+         n = write(sockfd,front,strlen(front));
+         if (n < 0) 
+diff --git a/echoserv b/echoserv
+index 1c44c8603e3ba8b6d488e92d2fb93bc7c6e056eb..ac493c25cfb7219f1e10c4ac02203321ab20df03 100755
+GIT binary patch
+delta 1008
+zcmZ8gYe-Z<6rS1D+%<Q-`!F?A*K~8Whp2&(TD#@aHH1aeL?{e2YYDS#dkB@LXx?N&
+z9YTYk{)Ob9xX_DiH6=5w40;&;$PD3{7DijGsZD3DX4t^Ych7ge^P0;vmp7L;52>?4
+zki4>5-g$I!h6N+eV3j}ONCzG<uI`$AX87d0)0bLuaW=|cbhtC6R%}-sQ{ZAz?O)}u
+zn$}qn-``UsUJAUaP^k1IO|unSNTp^s=1G^P1)m`fZ6<CfZfzm%CgWN=mdN^Gho3Y{
+zDQOGdQr$2^sZj3&v*|KBd3QaUqx7K~8sUZhyQ~{2_ZM?q=D@M&=Y==ml`OKOUUq;P
+z4#`09*Gy!l@Q8Q28Pilh#qtZ!L5Sq4bF(y?)^!0;R2Aq6f|AlIsK+<ieWiS=pV<P2
+z%U}BDqjaFRfEUL3x+#tq&iR;v)fXU-2eTGEq>alA&jn?pvd%t*o9t73$uQ`Kna)W*
+zbLNau_PGrtb&^W3&-L4V5Q!!oELq7AXeAyG1>Z&)fhW0T++&1DqAn%7<9~Lbw=6h1
+z3n5#fZLdwBwgOvzj@x`b$b<@b_eO?$vV|Yn!t3OboCMaritm|MN|EAqT@kJ}mm+&!
+zo+Hn6y3*-#9zA4oRhUjxlpHzeLO4R1egK+V348E6rJaB|KPf#6xC1751*n7Jy@0KN
+zM!1A1xa7@%>GPE41MUZO0eS$h0`B`w=>xz)KtBbH)NU~0C*+<X35SshLp&}cI%6~r
+zA<1x_BDu!sm@)Xjkr0AxTCPE{Q?o)DhJylBXbn((u-}sw(0(AdjPWrMP`(YgC9R^B
+zNfBHR+5kD)$&7Iq?iOt!FH~d{bA*esVy~DRwcQ_kNlR>KIMQ2L{IaD)9Eu}7v7xvT
+z&JgiS>=?#Y^3r?*Pm`*3p5$WADhI4x3}X}Okp_KS<mHyY_f+P!$SXSI9aw?%<i2GS
+zt`R3J*RW2W5kyqE5PU(rlK3_N*OKEYNop@VGPb;=BPC6@)TCY}p}DW1`S)%UQq$Cp
+Ni?6s*bf(5D{{V%!c<2BC
+
+delta 963
+zcmZWoYe-a45I(cZ=4$PFue;WY=Bw7N)O<v`6xJ@ebc;kY?eQ~wl!cG1A8U{mqIi>y
+zwJ9(mvOk6NXW{-RB3~IvQD#wO*$<1A){-!yT2s5tS&f1YocYeod^7W%dpX`}Z?$(M
+zyd;{1R!RHoJ~7j@;AEN{p+hEi!<hNP{#o1Z&g`$ly=m-L&Bd64iR2okLsO>#w-T;v
+z(CNoT2a|>d>XdU4H#M4|h`EMMV8MFBPOxK-p&brmp)n6y(PP{PKAbSRU=&j$3s)xp
+zR8_e-IIF5nJ>0T}h`yO92MfHT@z@w?PpO{aj5*4+UE)^qG_yHX?KP1?Ngle*Wd`i{
+zHqufMNzE41lnF4Z{Kpl!E8mkm9$w$pJjI*I!$kZL{9nX!bP5*h8_GN!ES2O5scA}(
+z<WoVZ%@yR$>!@2F@Y&a~QOJw26SGy@<eGvu*OXK?O1x3dE5a9o)e_)GD^Z#Pdf7EM
+z<O*`xpHgw7n4SNGw=5f>ihu+o4;Xtm=ymRM?sdwlv(#C#%VRyiERmH;o^+0TcF5m%
+z$S<?TcCF>2^wPk*Hju9P!~+oHDlRT8POPsuSYB0gD6z7>wmR{6ZQ0R^6R0=Eon{PT
+zwVTUn@KW0S-&EB{==h<kX9#mh-6)}sF2>ch5L)PhQS`CwgwnjK?k7A#=q7wj*hT30
+zrK<geK0>{Q3Tc@afWgUP25tdjmxbxQc*V37ZezD81N8XXWP`m3<^<4T64^?0niG<q
+z(+|v{Ud(9}S~S}XOSD-)r7Vs@_h|?4EO9^LHM1>gHR(Fe=ltPnYB-hUQz(skxN*|F
+z9lDgP=%;!V;vL{ucE@kkfgjsft$=B=(OQ9J;sALaWTTbOtKI_?;WO(E7{`W`zAU%k
+z-~(84$TD`9+D0)0n_G;B##8Q5C~jnarOH+anrRX5tXU6r%H*1>AcpQkBvrdm+^Jk%
+y_bLqP@mO|7xS!q)Uw-V)&K0K@y=gHNWLxkHasEEVwHtE7I~E^ihf=k{ru_}wc4%1u
+
+diff --git a/echoserv.c b/echoserv.c
+index b489592..ad63f64 100644
+--- a/echoserv.c
++++ b/echoserv.c
+@@ -130,9 +130,10 @@ void handleCurrentConnection(int sockfd) {
+     char buffer[MAX_LINE];
+     char new_buff[MAX_LINE-1];
+     char num[2];
+-          
+-    n = read(sockfd,buffer,MAX_LINE-1);
+-    if (n < 0) error("ERROR reading from socket");
++
++    Readline(sockfd, buffer, MAX_LINE-1);
++    // n = read(sockfd,buffer,MAX_LINE-1);
++    // if (n < 0) error("ERROR reading from socket");
+ 
+     findSubstring(buffer, buffer, 6);
+ 
+@@ -143,9 +144,9 @@ void handleCurrentConnection(int sockfd) {
+     sprintf(num, "%d", length);
+     strcat(num, buffer);
+ 
+-    printf("%s\n",num);
++    printf("%s\n",buffer);
+ 
+-    n = write(sockfd, num, strlen(num));
++    n = write(sockfd, buffer, strlen(buffer));
+ 
+     if (n < 0) error("ERROR writing to socket");
+ }
+@@ -166,9 +167,13 @@ void capitalize(char buff[]) {
+ 
+ void findSubstring(char g[], char p[], int diff) {
+ 
+-    int length = strlen(g)-8;
++    int length = strlen(p)-8;
+     int i;
+     for (i=0; i<length; i++) {
++        if (g[i] == '\n'){
++            g[i] = '\0';
++        }
++
+         g[i] = p[i+diff-1];
+     }
+     g[i] = '\0';
+-- 
+2.1.4
+

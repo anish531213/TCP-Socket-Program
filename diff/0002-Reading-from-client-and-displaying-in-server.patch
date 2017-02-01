@@ -1,0 +1,542 @@
+From 664d5c6614a2d0f19c3a1e91f1b02822ee873e2c Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Tue, 31 Jan 2017 16:02:52 -0500
+Subject: [PATCH 2/9] Reading from client and displaying in server
+
+---
+ client/echoclnt.c | 135 ---------------------------------------
+ echoclient        | Bin 0 -> 13776 bytes
+ echoclnt.c        | 185 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ echoserv          | Bin 13552 -> 13608 bytes
+ echoserv.c        |   5 +-
+ 5 files changed, 188 insertions(+), 137 deletions(-)
+ delete mode 100644 client/echoclnt.c
+ create mode 100755 echoclient
+ create mode 100644 echoclnt.c
+
+diff --git a/client/echoclnt.c b/client/echoclnt.c
+deleted file mode 100644
+index 1fe3d7d..0000000
+--- a/client/echoclnt.c
++++ /dev/null
+@@ -1,135 +0,0 @@
+-/*
+-
+-  ECHOCLNT.C
+-  ==========
+-  (c) Paul Griffiths, 1999
+-  Email: mail@paulgriffiths.net
+-  
+-  Simple TCP/IP echo client.
+-
+-*/
+-
+-
+-#include <sys/socket.h>       /*  socket definitions        */
+-#include <sys/types.h>        /*  socket types              */
+-#include <arpa/inet.h>        /*  inet (3) funtions         */
+-#include <unistd.h>           /*  misc. UNIX functions      */
+-
+-#include "helper.h"           /*  Our own helper functions  */
+-
+-#include <stdlib.h>
+-#include <string.h>
+-#include <stdio.h>
+-
+-
+-/*  Global constants  */
+-
+-#define MAX_LINE           (1000)
+-
+-
+-/*  Function declarations  */
+-
+-int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
+-
+-
+-/*  main()  */
+-
+-int main(int argc, char *argv[]) {
+-
+-    int       conn_s;                /*  connection socket         */
+-    short int port;                  /*  port number               */
+-    struct    sockaddr_in servaddr;  /*  socket address structure  */
+-    char      buffer[MAX_LINE];      /*  character buffer          */
+-    char     *szAddress;             /*  Holds remote IP address   */
+-    char     *szPort;                /*  Holds remote port         */
+-    char     *endptr;                /*  for strtol()              */
+-
+-
+-    /*  Get command line arguments  */
+-
+-    ParseCmdLine(argc, argv, &szAddress, &szPort);
+-
+-
+-    /*  Set the remote port  */
+-
+-    port = strtol(szPort, &endptr, 0);
+-    if ( *endptr ) {
+-	printf("ECHOCLNT: Invalid port supplied.\n");
+-	exit(EXIT_FAILURE);
+-    }
+-	
+-
+-    /*  Create the listening socket  */
+-
+-    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
+-	fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
+-	exit(EXIT_FAILURE);
+-    }
+-
+-
+-    /*  Set all bytes in socket address structure to
+-        zero, and fill in the relevant data members   */
+-
+-    memset(&servaddr, 0, sizeof(servaddr));
+-    servaddr.sin_family      = AF_INET;
+-    servaddr.sin_port        = htons(port);
+-
+-
+-    /*  Set the remote IP address  */
+-
+-    if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
+-	printf("ECHOCLNT: Invalid remote IP address.\n");
+-	exit(EXIT_FAILURE);
+-    }
+-
+-    
+-    /*  connect() to the remote echo server  */
+-
+-    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
+-	printf("ECHOCLNT: Error calling connect()\n");
+-	exit(EXIT_FAILURE);
+-    }
+-
+-
+-    /*  Get string to echo from user  */
+-
+-    printf("Enter the string to echo: ");
+-    fgets(buffer, MAX_LINE, stdin);
+-    
+-
+-    /*  Send string to echo server, and retrieve response  */
+-
+-    Writeline(conn_s, buffer, strlen(buffer));
+-    Readline(conn_s, buffer, MAX_LINE-1);
+-
+-
+-    /*  Output echoed string  */
+-
+-    printf("Echo response: %s\n", buffer);
+-
+-    return EXIT_SUCCESS;
+-}
+-
+-
+-int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
+-
+-    int n = 1;
+-
+-    while ( n < argc ) {
+-	if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
+-	    *szAddress = argv[++n];
+-	}
+-	else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
+-	    *szPort = argv[++n];
+-	}
+-	else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
+-	    printf("Usage:\n\n");
+-	    printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
+-	    exit(EXIT_SUCCESS);
+-	}
+-	++n;
+-    }
+-
+-    return 0;
+-}
+-
+diff --git a/echoclient b/echoclient
+new file mode 100755
+index 0000000000000000000000000000000000000000..32a4152095dca208702dfc64d2ee10da22ff9503
+GIT binary patch
+literal 13776
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/echoclnt.c b/echoclnt.c
+new file mode 100644
+index 0000000..5ef49e8
+--- /dev/null
++++ b/echoclnt.c
+@@ -0,0 +1,185 @@
++/*
++
++  ECHOCLNT.C
++  ==========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++  
++  Simple TCP/IP echo client.
++
++*/
++
++
++#include <sys/socket.h>       /*  socket definitions        */
++#include <sys/types.h>        /*  socket types              */
++#include <arpa/inet.h>        /*  inet (3) funtions         */
++#include <unistd.h>           /*  misc. UNIX functions      */
++
++#include "helper.h"           /*  Our own helper functions  */
++#include "helper.c"
++
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++
++
++/*  Global constants  */
++
++#define MAX_LINE           (1000)
++
++
++/*  Function declarations  */
++
++int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
++
++void error(char *msg);
++/*  main()  */
++
++int main(int argc, char *argv[]) {
++
++    int       conn_s;                /*  connection socket         */
++    short int port;                  /*  port number               */
++    struct    sockaddr_in servaddr;  /*  socket address structure  */
++    char      buffer[MAX_LINE];      /*  character buffer          */
++    char     *szAddress;             /*  Holds remote IP address   */
++    char     *szPort;                /*  Holds remote port         */
++    char     *endptr;                /*  for strtol()              */
++
++
++    /*  Get command line arguments  */
++
++    ParseCmdLine(argc, argv, &szAddress, &szPort);
++
++
++    /*  Set the remote port  */
++
++    port = strtol(szPort, &endptr, 0);
++    if ( *endptr ) {
++	printf("ECHOCLNT: Invalid port supplied.\n");
++	exit(EXIT_FAILURE);
++    }
++	
++
++    /*  Create the listening socket  */
++
++    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
++	fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
++	exit(EXIT_FAILURE);
++    }
++
++
++    /*  Set all bytes in socket address structure to
++        zero, and fill in the relevant data members   */
++
++    memset(&servaddr, 0, sizeof(servaddr));
++    servaddr.sin_family      = AF_INET;
++    servaddr.sin_port        = htons(port);
++
++
++    /*  Set the remote IP address  */
++
++    if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
++	printf("ECHOCLNT: Invalid remote IP address.\n");
++	exit(EXIT_FAILURE);
++    }
++
++    
++    /*  connect() to the remote echo server  */
++
++    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
++	printf("ECHOCLNT: Error calling connect()\n");
++	exit(EXIT_FAILURE);
++    }
++
++
++    /*  Get string to echo from user  */
++
++    // printf("Enter the string to echo: ");
++    // fgets(buffer, MAX_LINE, stdin);
++    
++
++    /*  Send string to echo server, and retrieve response  */
++
++    // Writeline(conn_s, buffer, strlen(buffer));
++    // Readline(conn_s, buffer, MAX_LINE-1);
++
++    char c, *temp;
++    char inp[1];
++    temp = buffer;
++    int sockfd = conn_s;
++   
++    size_t      n, nleft;
++    ssize_t     nwritten;
++
++    n = MAX_LINE-1;
++
++    char new_buff[n];
++
++    while (1) {
++
++        // printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
++        // fgets(inp, 2, stdin);
++
++        // if (*inp == 's') {
++
++            printf("Please enter a string to continue: ");
++            fgets(buffer, MAX_LINE-1, stdin);
++
++        // } else if (*inp == 'q') {
++        //     printf("session closed.");
++        //     break;
++        // } else {
++        //     printf("close");
++        //     break;
++        // }
++
++
++        n = write(sockfd,buffer,strlen(buffer));
++        if (n < 0) 
++             error("ERROR writing to socket");
++        
++        // n = read(sockfd,buffer,MAX_LINE-1);
++
++        if (n < 0) 
++             error("ERROR reading from socket");
++
++        printf("%s\n",buffer);
++        return 0;
++    }
++
++
++    /*  Output echoed string  */
++
++    // printf("Echo response: %s\n", buffer);
++
++    return EXIT_SUCCESS;
++}
++
++
++int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
++
++    int n = 1;
++
++    while ( n < argc ) {
++	if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
++	    *szAddress = argv[++n];
++	}
++	else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
++	    *szPort = argv[++n];
++	}
++	else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
++	    printf("Usage:\n\n");
++	    printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
++	    exit(EXIT_SUCCESS);
++	}
++	++n;
++    }
++
++    return 0;
++}
++
++void error(char *msg)
++{
++    perror(msg);
++    exit(0);
++}
+diff --git a/echoserv b/echoserv
+index 5a5d06f10bb6185fd1c1db8266432f5d77c0a4fb..7fab5b2926b28fdabbf660c7f0a623b0fccca561 100755
+GIT binary patch
+delta 2370
+zcmZXWe{9o56u|HLWAxkoXun&xw!-!;+qzL;YbPU<5Ljn4bOe$OHwjU2lSqb%b0QK+
+zMz%2~sW@T0Ka50>@COWxq%eaG8rH(X1QXmu%^V|cL`+Li%YrZwsqbCCoibn2yZgL*
+z@7;ax-rY5}x%bt5HrXS28A+mKthdK?%vdK29jlXjMoW1BB)(T3GbMCmriAGj9Ou{U
+zf$JZwyE%MTdnvkccVPMA(q_Za0Sy{j;Go88uwZM+<eoV&%;)g6a7SZ>fLjN3+J)fI
+zdSF~@gBtveXl%TldiiUj?50xxF*-ZYGYbr8Go`ihrbGlJug(VTShwhGd<*z>Yf@Ua
+zY;NAV2}X5Y(4e=#7JaFF5(Aj=_tq1eCB`%?2&eQ}_B7NaCFE!jO+A*DzU%rgcw4Wk
+znuV$?(U~ZGowp6XJ^EamgZa8bTlJBzQSa*<FkDFV#}{W}SKMjA(xiB?MchQ4(eXHn
+z(@4yThXiYgX|19m!4Is+ZCX+Ugkq8uI^x5EZxPc}qx%HkAWk7}7d%Q#^NzL%{+8H4
+z+#vWeF|GuQ)(AdNY$WyyK8xJelu8PZP@E<MTCb=>@Co8{Vzb~Q#2Lg)@Bv~<lW6P_
+zDxCX?X$PX?g5M>k)QS!X-btKE96~Ppwc0=2w!!DW;p_Z4R#R6!7z$;0nQt&$BdWn|
+zsa_UYfr0OCGAYk6797OAs`r)9F8VsBGJO7<+hzwboY*0GeLr=?$I*BfDcSl9v@x4X
+zlYEZ)>wO)+i2&h8S_}YNrP=cmekKJy5+k)Qo5*osBFXh=5^2UMtiPzgk^`ShLB1MV
+zjFo&D1dL1NiHGsH&;M-9*SRCc+LTBb9vY8j{b+G8pFez7!8x3x1n3`uGpVkugQ`Av
+zT0aGosZUwfsQLxddYcKBr`7Og*qc^j31!U;=QF`j+Wf4YYRBAZza~geUz%0^Km9&<
+zA-$sQV*hD8%VNPI%@1(q-Cbt!0fP}Yq5r(EyPGt7y6*l(e8oQ)xi!rQO=#8?+CC2t
+z#=*?QtQ^yW2Qhf$2ejy?Z;pJ4t!NG|ok?j&W>xOBRnJ%X<5l%lb*s9aCru9Ai|!Jt
+zpR4xYtM-3ic5RjGrZ{)uzqOIoeU6MLxyJb>EHur57L#qRWhx$j4<pt68IQk+^-3J!
+zGpy}6+3&DE0LM)gn%ETFFqP`t@5kd_$Tk=7_hE@y!3|qyR`iF^<!av!b9uVK=tURC
+z#=)LfEDy~}5G6aw0MzEa#PI^jQ}_T3=T-8rKvoplkm42nbm~Y(ph|J`UU)-Mcq{ZM
+zyTRjld-gqpSM;W+cWsVZ7fD{c-?ICHju^KGbqOP3sTNu`i?u>H--;o_`Po_t2e^}O
+zwI_#t+%}aB!Q28Xk71cTJDnx3_Q$O<@MAg(vb83(?m+7?I8~6XlbOQ|rwfkaWnWd8
+z4b6owL!{6Q<AnzMVRg32Fjd&luykB0?p&c^Mp)_GpsA7Jg!3p5L2c0rjPYTS+fJwG
+zzp@w8Ad}JX6GgA{+t65KmE%H}&i+tWzXP@xD?ArEimluu%BQKcH{v~MW;Pa>5wjU4
+zimhOtr-NO^mc|~mk~KCKoMCl{^b9{3?-3HZQ%OEWeI|ZMkvjS}2{k*T>gnDgc}0|r
+zU8K1*j$*Hw+1b#HQGQarlFL3{_4-A%pSd2Bsy$t6Bv+A1?$aoGNt=BAJT4nAgEE&D
+z8eBRkcUf}RVjq3y%!nJ4K4m+wmB}z6)I3f^W~`GuaqdY^dL2kU=nK1k=jtQccVt0^
+z2FAIrFHqv(d<uq3-EuNLgX-c9fb4e5t$MHUZ>47mWj@rp-BPcr?FGNPLK;zN1TMKN
+zrcaE49xfC-M;^D7oaYc!dn)9ZI_sEvth~_UaZmqK@z4{7vLA-gb3omr0g%cnq~s1`
+z9Hf8$s`$$)j1IF`_&Lmdm&@Man5DIg+)^^50^na%iTQg;lu~&mH$ruJrDV$&PMGaI
+P<rUJDD?y*YaJljiwOE_6
+
+delta 2185
+zcmZXVe@s(X6vyxF5A7?oea}MLs-p!gQXRA?6P;UZjSD5w44q832!dfoTrzQk{YX$G
+z$fR>_;#o3`Spr)!+5T8iwxqHsMHiV{GQmu<Xk5_wqur)fgZN{*w{zZmMdMD>d*0`J
+z&pr3&yRT<svTnCiN}7U<Of4C!@9^z6kBN%L#>9@Zg}es@{;||#Q?(|W8rlS3@pG<y
+z^BQV)AA4~1ldFeLuUdE8`cdhmbvg{R!)H2&$&OD8Zta{7BYZk+(>wWFa8u`iyLu;h
+z^a0p_-h}^pgOjgUYJ&LG2^aJZC`VmHsv(^>L&)HVE`tFY3{Ugdq1&(m?i;q7m`?fW
+zVTW;nv>$t;fj3UA6Bz0TV8m#5rJ<6tn5SBKG-7G*duaTgH-}sQHidT@E1Vt{Zi_V-
+z<HxWr-1>uw{9`6Rvlv5U?-DF+?jSx9Z=i_8sEp=)mY5R{D?Epo)*=y8cowmqxL4sE
+z;${O0U5YT31R7dmx5871ClPN`*i1Z`xL#o$v5B}^;rk9`oH<LBD}0OCOdM4BPhwh*
+zL_pz-$juwlN$@DbSqiWaiwd72wh}Xie<G%1kVyWEg7+vft$1Qo;eKL?co@0pT3KYI
+zDjc~OZoQN&Us*O3tF{JNcxW(bAvZKHEy&^(rI=`Jz0JLZvFHG9Per&OiZ0xG*BXvo
+zetTLJ(<wV6RSr;vJc_~FNo1ABXd~7aruYceSA<)xN8xM1o3BRO+!&|k-}Zbq4v;lU
+z6_`2x26kL|+-P;c9U;mqq1U{KFN36cp>*?sEQcd6B*U#+lC0SsAA#r6_S;>V9u|%a
+z_Pep?Becx}@4|SR&wf5b)t{QsJ7G@x{ER)CK6^rsT48H?Io}E=(+e_~R{bbl+zO&)
+zmi?$*&6hpV&IHRW3+)a6(*v;2QlcM<uZHUuSF`@1EbnX^`$v`|L-CgTvfLJXFCS0#
+z_!KptXCmKfe1qdRFk*nF5kHMj2|unzXjSOtP(%(@gjO!y<+X|)T+Ces<X<X_jF&}D
+z7oA(`yR5u0gAeub#(TI-ZPyyIl=bi1W%Y9Sz?KEWHfQ#dyR!TtCU3x)HRv~DAK#*1
+zfW!M0eLo0diB7x+i^W1??;TkVK%<z;zk$7?8~5Un=r$g~CjEWq#bOIoOKXLg5X5$j
+zb%85urqnrEB|5BRwXi&EE$@N@S#Ew9MzR+1UXa{wDQ*lZ_4L+|MIq$&^LE(mcJnIe
+zaPP36(K21p{P^S`*gad|3>W)io+PKFISvfIkdvu5v3B$h9#zQ9;)+jWoe;{+)Tgr;
+zdWS1@rK(-3rJh-FkehQIydKL;y~vuN8!3imCj64S2XEP$8Sh9QZJMdJg)lP1vBzt|
+zVF=z*T}*%#-YQ*EgoEBMc{RL}SBee0^ZYoZkvs>lg+$&a*I&4=Q<#N)XAUZPTC{Ap
+z;Xs}P+GjfPHtwG3;DuDWmf;;GGAHZ7x94$t6?ndb*HKK(7L1W}PS*QG%m<`18>`1R
+zn~ZKVvc0I&2(D<;IjPF*b4{l!fb2D;WbB~Q%W<p~nTriS(aX=NR@%2}me%T&7Ef>b
+z<Mz82Pd5x%KQh@L%B*kGyujl#z)D{R%=bCDAC~*3Wzzhf%=98;`y54edYTPxvvx+*
+zY>aI}UBdCEJ}Yz=leP9;@ZI2FT$-)xix+q}9|ghhm%0o=rM633q{GlL!wzfw)1@ly
+zlvWv)0G1CCzh7wA)OHy3mk3dfqQC<s6X!avwdjSifL}<BuM=7@CZ>%xrXBtOoCx?Q
+zzV}IOuy2A;<QHnS{i}sgQHhY+&3b4-di22`EGjX_w9kLc)~B2EKF8A+nd=u)XQu}S
+m=Ptst$cw2AVX1?b;zfd(qt5I{I8j_;{>`V-r+P3KX8i|YmS|!C
+
+diff --git a/echoserv.c b/echoserv.c
+index 724fcca..7dc3826 100644
+--- a/echoserv.c
++++ b/echoserv.c
+@@ -16,15 +16,14 @@
+ #include <unistd.h>           /*  misc. UNIX functions      */
+ 
+ #include "helper.h"           /*  our own helper functions  */
+-#include "helper.c"
+ 
++#include "helper.c"
+ #include <string.h>
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+ 
+ 
+-
+ /*  Global constants  */
+ 
+ #define ECHO_PORT          (2002)
+@@ -107,6 +106,8 @@ int main(int argc, char *argv[]) {
+ 	    then simply write it back to the same socket.     */
+ 
+ 	Readline(conn_s, buffer, MAX_LINE-1);
++
++    printf("%s", buffer);
+ 	Writeline(conn_s, buffer, strlen(buffer));
+ 
+ 
+-- 
+2.1.4
+

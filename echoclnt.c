@@ -33,6 +33,9 @@
 int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
 
 void error(char *msg);
+
+
+FILE *write_ptr;
 /*  main()  */
 
 int main(int argc, char *argv[]) {
@@ -105,10 +108,11 @@ int main(int argc, char *argv[]) {
     // Writeline(conn_s, buffer, strlen(buffer));
     // Readline(conn_s, buffer, MAX_LINE-1);
 
-    char c, *temp;
+    char c, d, *temp;
     char inp[1];
     char front[MAX_LINE];
     char back[MAX_LINE-1];
+    char filename[MAX_LINE-1];
     temp = buffer;
     int sockfd = conn_s;
    
@@ -142,7 +146,7 @@ int main(int argc, char *argv[]) {
             printf("Please enter the file name to send: ");
             while ((c = getchar()) != '\n')
                 buffer[i++] = c;
-
+            strcpy(filename, buffer);
             strcpy(front, "FILE\\n");
             strcpy(back, buffer);
             strcat(back, "\\n");
@@ -162,12 +166,29 @@ int main(int argc, char *argv[]) {
         if (n < 0) 
              error("ERROR writing to socket");
         
-        ns = read(sockfd,buffer,MAX_LINE-1);
+        read(sockfd,buffer,MAX_LINE-1);
+
+        char size_buff[10];
+        int k = 0;
+        while ((d = buffer[k]) != '\n')
+            size_buff[k++] = c;
+
+        printf("%s", size_buff[0]);
+
+        int size_of_file = atoi(size_buff);
+
+        // if (size_of_file > 50) {
+            write_ptr = fopen(filename, "wb");
+            fwrite(buffer, sizeof(buffer), size_of_file, write_ptr);
+        // }
+
 
         if (ns < 0) 
              error("ERROR reading from socket");
 
         printf("%s\n",buffer);
+
+        // printf("%s\n", size_buff);
         break;
     }
 

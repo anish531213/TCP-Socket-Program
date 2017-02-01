@@ -1,0 +1,139 @@
+From 54a31eb62d3b7e54cb2407a1c6b79477702f32ba Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Wed, 1 Feb 2017 14:05:40 -0500
+Subject: [PATCH 9/9] Debugging file writing: file is writing sucessfully but
+ with preceding size int
+
+---
+ client/echoclient | Bin 13968 -> 13968 bytes
+ client/echoclnt.c |  22 +++++++++++++++++++---
+ client/resume.pdf | Bin 0 -> 8192 bytes
+ client/writed.h   | Bin 653 -> 649 bytes
+ 4 files changed, 19 insertions(+), 3 deletions(-)
+ create mode 100644 client/resume.pdf
+
+diff --git a/client/echoclient b/client/echoclient
+index 31561af75113fba5b6243bb22f96ccaea028dec5..c611701f7d3ccbe6a7dd1228458688c1e71b131f 100755
+GIT binary patch
+delta 338
+zcmbP`J0W*N3zNv9RqLBYbk5dmW=03-tevuc_6)^yn`ba}FfrcVtjMax!5FgHhxatI
+zs1_pw!~VA-4h%aOfZ#>jkN^K)icQuL+*{ATtyTZS|Nk~6r2!tjtp;EI|KIl+sLrGF
+z_zMf5DvwT9Mt%hbk8ajqd_b!8K#8VDx9B?{ySw$td!T&s2cR|uu*!?OfVO~j#sT@S
+z876eM-T^8BnpF4w|Nqtll^Q@}7K4oGJh)2%sB|AAgDlWpKY;eV&;e@M57PgF3B-~V
+z1&ZC6TrVWS_<r&Xp+JFHpb`6l(hM(}fh>Oc&HsfGnK;Y;{{OE6)U|$crs!qaxvW5W
+zM?QfzCTCtY<{7L!>>La-K%pf->^(VBOr9}$bEVjQ0mj>tBh{}nF5YaYk<Z9Dck@Ec
+G_dEa(f{sZ5
+
+delta 357
+zcmbP`J0W*N3zLYlWa{zx+ZxYG-ca9p$lEV?mX1Zz<{3;KOpI4IE3#^FF#2uw;XTbP
+zs=~;?u>Y-y1H%pmAb8RC<NyDc0+V$F_trP>ee(YQf1^4dkKR^;FaQ7V`wUd&(RuuZ
+z6;O>wCo40*0)t04>mNQK)q0>r)uUVV1Bl(*ssL7SaTm~NhJ7!X8Nj+yfP$|XCUm#n
+z0h$UlrRDqo|E&iqHGoE}1ZnF$xJv<~9;9ji4-p3gh8IRaE&D<I7aSm#q^JYKi+kVx
+z{|7tOqr3D+iifd@ss>O&3G0imljjKqiX{V0-47ICc+m-DrSZ$RfH<4~3nemf7XJPJ
+zALQMYlQTsx%T8wnN;vWfv@tpJvN2C$<zeSwkO2xU0b<w5kz(?Uv70N!?h7zpogArt
+UopJ7FLyde!#_5|EYQE<I0GgbUQ2+n{
+
+diff --git a/client/echoclnt.c b/client/echoclnt.c
+index d742dcb..b02d4b7 100644
+--- a/client/echoclnt.c
++++ b/client/echoclnt.c
+@@ -114,6 +114,8 @@ int main(int argc, char *argv[]) {
+     char back[MAX_LINE-1];
+     char filename[MAX_LINE-1];
+     temp = buffer;
++
++    char new_buffer[MAX_LINE];
+     int sockfd = conn_s;
+    
+     size_t      n, ns, nleft;
+@@ -166,7 +168,7 @@ int main(int argc, char *argv[]) {
+         if (n < 0) 
+              error("ERROR writing to socket");
+         
+-        read(sockfd,buffer,MAX_LINE-1);
++        read(sockfd, buffer, MAX_LINE-1);
+ 
+         char size_buff[10];
+         int k = 0;
+@@ -179,10 +181,12 @@ int main(int argc, char *argv[]) {
+ 
+         int size_of_file = atoi(size_buff);
+ 
+-        if (size_of_file > 50) {
++
++        if (*inp == 't') {
++            // buffer = strtok(buffer, "\n");
+             write_ptr = fopen(filename, "wb");
+             if (write_ptr) 
+-                fwrite(buffer, sizeof(buffer), 1, write_ptr);
++                fwrite(buffer, size_of_file, 1, write_ptr);
+         }
+ 
+ 
+@@ -241,3 +245,15 @@ void error(char *msg)
+     perror(msg);
+     exit(0);
+ }
++/*
++printf("Breakpoint");
++
++                int i = strlen(send_buff);
++                while ((d = getchar()) != '\n')
++                    send_buff[i++] = d;
++
++                send_buff[strlen(send_buff)] = '\n';
++
++                strcat(send_buff, new_buff);
++
++*/
+\ No newline at end of file
+diff --git a/client/resume.pdf b/client/resume.pdf
+new file mode 100644
+index 0000000000000000000000000000000000000000..ebed4bfa768c630abd63dff77e94ee6d683a7074
+GIT binary patch
+literal 8192
+zcmeH}du&rx9LMj(y*eIKNf>0xVFH4(-rn0MvM!z6Zfo4u(iK>Eq_2Com8>mvEtv%3
+z0?H%uhmeUQ8WTW83=o1Q`j>zqVF~`R><^_X0bh|<LM0ImMDd(^e!l^Y1pYEHxp!$l
+z=XZXubH4Z7?n;u=>5@%z0!nkeWVV~;ocLq^-zJ$@NIJI0)X+f0wnR#cW)d4Tl}OYg
+zlAb}tR<e>Tv@Rr)-9c6p(N7#i^fIsAVkcq;3l4G9Mj9JUT1sUV$$xs8toLjr^vYU|
+zh+RRgn{Go(^<;aAWRZ#3oaoDH8OpwBR#UWiTBTu}foLY#PnZge(|x&Qs-MuU1u~kN
+zh-cFoBFS`TL|jglkcgFjs1ClAstwQynb^VZP7~Qq*AXOQFrCg48y|O4Nr~O6*ISRe
+z6{#co6tc3xZnJ5wXt(N+q86t;*6pC*wx}A9IaN!{;dC@UJYqGw1^wBK7EPK4-i^o9
+z$i<#WED~{5*6p3PIp0inubVs^D&KXgk?ek}WWoNbx;Y28<Yy3hq(+f9mG9oU=lZE@
+zKasK4+QZFN%9WWDKFN9Bzhbj2dRm$B;pTk#^x>L2-{l9BJ(1e4W()LsoPE)&oPOBY
+zQdY}M%7*(`ty_XH2&@1Ge#xpVuQoSbpDE_fP9BKFeoJUx8PvEJJ1-n6y#6ZfU)f&x
+zixT6J5h<k4_sX0be&q4!$9eMhS-nn88Lu-HI9kE&5g_(ER?g=?fQ_A0dA{X*pI&F=
+zNK)tVUwJ=_!+DI~4t-t&mfX8JI^NjA^NGTV@!JY}HnPw!SKiQ5ntg5FRjG{DpG#`y
+zwQBdOlu7T8bpx>8kpy2SwwZu~BH}tO4)OQ`<j+fT8~vDe4D>0v#@C7d2gRfR+zwt3
+z^*sZ1urBtGK>zK#&K6iM=Hb3jC)DK*z4RJGDP4z;4)gngx)TpSuV~}>S^CYO9*_Nt
+ziT9t)6Z$D-19~Bg&l|?0-};E>1>=g(%jclar$EmST<^Jj8N%&Sk3PCMffM7+9qyaV
+z;rjiYe#^~zlpwqb&kgp$x`R0Xi07ro#GePeUj*#xHUEBITESm@ULF*W=Y`#W_Ppcs
+z8h~}eb_DE?`(pDf7xQpms1xdf=cNSd{kiY{^MdssMpqTr0iUY?>=Vx!=Hq_apYrHa
+zCrzB_7mDVqp{{V^+fmtdVGRAAkNNqo0Y8$}VQVOx<YB|{t8~S0H|w7q8^eC%b;l$4
+zpmfE$)6N_7>q}RZY*~9FUti?DYr;CQFYfzp03SW5-(}c$1+1U{H{ok%ncHS@J%@nr
+z0kQr8u#W;y0>1{9*YW(>Kr65dxD~hyxDR+7cp6yoEUz;YxC;0N@F*}3{291uKF|9M
+zcojJHc|P9)Tmw7`JoW<jp8@89w}4X?aQ}Q@1egVG0}cZZ0?z}l11Hw=I?n)Iz!qQ^
+zFak^i-vNFB90eADRc2myI?xLA0*8R3zyk0VaFWRL7XY2WB|sIp6?h2vJrK{wEF4()
+z|9^ZhxpVvK3FaDqrvS$j5U&F9JbMI>K7;QKF7V^;dL`KGy-2@2{C63C?r~PYID8(e
+zz;g*2O)Rn}71@)E>}g;l_*<1A?3m2;n+cAqpvx4n_kthu#(4mKU<NKNt4v&e?8t!2
+z5q8+d-NwLBz)-+Yz)-+Yz)-+Yz)-+Yz)-+Yz)-+Yz)-+Yz)-+Y;D4-uS=8da>3Cm4
+zOJxN~cA72pPZDH{MHaf0mhiGrN6_umhn?QePM^Oc>{HxvSy<e*G!*g%!@l-#yI)z_
+z=5-Gwl6qWA(CcL$r76@DR(wIXxIUT@`w}tw>FLd?$$B-Kjf&A!qQ6&I>~9Z*m-~at
+zOF?hb%bjjgX{vj!v0>51x$|BWprbn%%cZh8p{YX&`h7~c)!*)Qi@oWj#*2teDK+yC
+DGn;s6
+
+literal 0
+HcmV?d00001
+
+diff --git a/client/writed.h b/client/writed.h
+index 4756e85149f1316d872f554a58856998e53a8e4a..21754a9c72fbbe7ec5be33223b43410744c9ae48 100644
+GIT binary patch
+delta 13
+UcmeBW?PO&!GqGgY$kNIL02TQI1ONa4
+
+delta 18
+ZcmeBV?PX;#GqL2_$kNKhqNUHp1pp?{1AhPj
+
+-- 
+2.1.4
+

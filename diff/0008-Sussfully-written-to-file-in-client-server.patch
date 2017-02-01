@@ -1,0 +1,410 @@
+From 72e1cb08c7504858b7429155ae9797eed69e5b30 Mon Sep 17 00:00:00 2001
+From: Anish Adhikari <anish531213@gmail.com>
+Date: Wed, 1 Feb 2017 08:06:23 -0500
+Subject: [PATCH 8/9] Sussfully written to file in client server
+
+---
+ client/echoclient | Bin 0 -> 13968 bytes
+ client/echoclnt.c | 243 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ client/writed.h   |  34 ++++++++
+ 3 files changed, 277 insertions(+)
+ create mode 100755 client/echoclient
+ create mode 100644 client/echoclnt.c
+ create mode 100644 client/writed.h
+
+diff --git a/client/echoclient b/client/echoclient
+new file mode 100755
+index 0000000000000000000000000000000000000000..31561af75113fba5b6243bb22f96ccaea028dec5
+GIT binary patch
+literal 13968
+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
+D+o6iJ
+
+literal 0
+HcmV?d00001
+
+diff --git a/client/echoclnt.c b/client/echoclnt.c
+new file mode 100644
+index 0000000..d742dcb
+--- /dev/null
++++ b/client/echoclnt.c
+@@ -0,0 +1,243 @@
++/*
++
++  ECHOCLNT.C
++  ==========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++  
++  Simple TCP/IP echo client.
++
++*/
++
++
++#include <sys/socket.h>       /*  socket definitions        */
++#include <sys/types.h>        /*  socket types              */
++#include <arpa/inet.h>        /*  inet (3) funtions         */
++#include <unistd.h>           /*  misc. UNIX functions      */
++
++#include "helper.h"           /*  Our own helper functions  */
++#include "helper.c"
++
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++
++
++/*  Global constants  */
++
++#define MAX_LINE           (1000)
++
++
++/*  Function declarations  */
++
++int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
++
++void error(char *msg);
++
++
++FILE *write_ptr;
++/*  main()  */
++
++int main(int argc, char *argv[]) {
++
++    int       conn_s;                /*  connection socket         */
++    short int port;                  /*  port number               */
++    struct    sockaddr_in servaddr;  /*  socket address structure  */
++    char      buffer[MAX_LINE];      /*  character buffer          */
++    char     *szAddress;             /*  Holds remote IP address   */
++    char     *szPort;                /*  Holds remote port         */
++    char     *endptr;                /*  for strtol()              */
++
++
++    /*  Get command line arguments  */
++
++    ParseCmdLine(argc, argv, &szAddress, &szPort);
++
++
++    /*  Set the remote port  */
++
++    port = strtol(szPort, &endptr, 0);
++    if ( *endptr ) {
++    printf("ECHOCLNT: Invalid port supplied.\n");
++    exit(EXIT_FAILURE);
++    }
++    
++
++    /*  Create the listening socket  */
++
++    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
++    fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
++    exit(EXIT_FAILURE);
++    }
++
++
++    /*  Set all bytes in socket address structure to
++        zero, and fill in the relevant data members   */
++
++    memset(&servaddr, 0, sizeof(servaddr));
++    servaddr.sin_family      = AF_INET;
++    servaddr.sin_port        = htons(port);
++
++
++    /*  Set the remote IP address  */
++
++    if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
++    printf("ECHOCLNT: Invalid remote IP address.\n");
++    exit(EXIT_FAILURE);
++    }
++
++    
++    /*  connect() to the remote echo server  */
++
++    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
++        printf("ECHOCLNT: Error calling connect()\n");
++        exit(EXIT_FAILURE);
++    } else {
++        printf("Connection started.\n");
++    }
++
++
++    /*  Get string to echo from user  */
++
++    // printf("Enter the string to echo: ");
++    // fgets(buffer, MAX_LINE, stdin);
++    
++
++    /*  Send string to echo server, and retrieve response  */
++
++    // Writeline(conn_s, buffer, strlen(buffer));
++    // Readline(conn_s, buffer, MAX_LINE-1);
++
++    char c, d, *temp;
++    char inp[1];
++    char front[MAX_LINE];
++    char back[MAX_LINE-1];
++    char filename[MAX_LINE-1];
++    temp = buffer;
++    int sockfd = conn_s;
++   
++    size_t      n, ns, nleft;
++    ssize_t     nwritten;
++
++    while (1) {
++
++        printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
++        
++        int j = 0;
++        while ((c = getchar()) != '\n')
++            inp[j++] = c;
++
++        if (*inp == 's') {
++
++            int i = 0;
++            printf("Please enter a string to continue: ");
++            while ((c = getchar()) != '\n')
++                buffer[i++] = c;
++
++            strcpy(front, "CAP\\n");
++            strcpy(back, buffer);
++            strcat(back, "\\n");
++            strcat(front, back);
++            front[strlen(front)] = '\n';
++        
++        } else if (*inp == 't') {
++
++            int i = 0;
++            printf("Please enter the file name to send: ");
++            while ((c = getchar()) != '\n')
++                buffer[i++] = c;
++            strcpy(filename, buffer);
++            strcpy(front, "FILE\\n");
++            strcpy(back, buffer);
++            strcat(back, "\\n");
++            strcat(front, back);
++            front[strlen(front)] = '\n';
++        
++        } else if (*inp == 'q') {
++            printf("session closed.");
++            break;
++        } else {
++            printf("close");
++            break;
++        }
++        // printf("%s\n", front);
++
++        n = write(sockfd,front,strlen(front));
++        if (n < 0) 
++             error("ERROR writing to socket");
++        
++        read(sockfd,buffer,MAX_LINE-1);
++
++        char size_buff[10];
++        int k = 0;
++        while ((d = buffer[k]) != '\n') 
++            size_buff[k++] = d;
++    
++        
++        printf("%s\n",buffer);
++
++
++        int size_of_file = atoi(size_buff);
++
++        if (size_of_file > 50) {
++            write_ptr = fopen(filename, "wb");
++            if (write_ptr) 
++                fwrite(buffer, sizeof(buffer), 1, write_ptr);
++        }
++
++
++        if (ns < 0) 
++             error("ERROR reading from socket");
++
++       
++        // printf("%s\n", size_buff);
++        break;
++    }
++
++    if ( close(conn_s) < 0 ) {
++        fprintf(stderr, "ECHOSERV: Error calling close()\n");
++        exit(EXIT_FAILURE);
++    } else {
++        printf("Connection closed.\n");
++    }
++    
++
++    /*  Output echoed string  */
++
++    // printf("Echo response: %s\n", buffer);
++
++    return EXIT_SUCCESS;
++}
++
++
++int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
++
++    *szAddress = argv[1];
++
++    *szPort = argv[2];
++
++ //    int n = 1;
++
++ //    while ( n < argc ) {
++    // if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
++        
++    // }
++    // else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
++        
++    // }
++    // else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
++    //     printf("Usage:\n\n");
++    //     printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
++    //     exit(EXIT_SUCCESS);
++    // }
++    // ++n;
++ //    }
++
++    return 0;
++}
++
++void error(char *msg)
++{
++    perror(msg);
++    exit(0);
++}
+diff --git a/client/writed.h b/client/writed.h
+new file mode 100644
+index 0000000..4756e85
+--- /dev/null
++++ b/client/writed.h
+@@ -0,0 +1,34 @@
++649
++/*
++
++  HELPER.H
++  ========
++  (c) Paul Griffiths, 1999
++  Email: mail@paulgriffiths.net
++
++  Interface to socket helper functions. 
++
++  Many of these functions are adapted from, inspired by, or 
++  otherwise shamelessly plagiarised from "Unix Network 
++  Programming", W Richard Stevens (Prentice Hall).
++
++*/
++
++
++#ifndef PG_SOCK_HELP
++#define PG_SOCK_HELP
++
++
++#include <unistd.h>             /*  for ssize_t data type  */
++
++#define LISTENQ        (1024)   /*  Backlog for listen()   */
++
++
++/*  Function declarations  */
++
++ssize_t Readline(int fd, void *vptr, size_t maxlen);
++ssize_t Writeline(int fc, const void *vptr, size_t maxlen);
++
++
++#endif  /*  PG_SOCK_HELP  */
++
+-- 
+2.1.4
+

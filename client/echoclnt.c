@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     // Writeline(conn_s, buffer, strlen(buffer));
     // Readline(conn_s, buffer, MAX_LINE-1);
 
-    char c, d, *temp;
+    char c, d, *temp;     // Initial variables
     char inp[1];
     char front[MAX_LINE];
     char back[MAX_LINE-1];
@@ -116,77 +116,77 @@ int main(int argc, char *argv[]) {
     temp = buffer;
 
     char new_buffer[MAX_LINE];
-    int sockfd = conn_s;
+    int sockfd = conn_s;  // saving conn_s in sockdf
    
     size_t      n, ns, nleft;
     ssize_t     nwritten;
 
     while (1) {
 
-        printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
+        printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");  // Promting for users direction
         
         int j = 0;
-        while ((c = getchar()) != '\n')
+        while ((c = getchar()) != '\n')         // Read the string seperated by new line
             inp[j++] = c;
 
-        if (*inp == 's') {
+        if (*inp == 's') {                      // If 's': string case
 
             int i = 0;
-            printf("Please enter a string to continue: ");
-            while ((c = getchar()) != '\n')
+            printf("Please enter a string to continue: ");  // Prompt for the string
+            while ((c = getchar()) != '\n')                 // Getting string input until new line
                 buffer[i++] = c;
 
-            strcpy(front, "CAP\\n");
+            strcpy(front, "CAP\\n");                        // String concatenation to create CAP\nxxxx\n
             strcpy(back, buffer);
             strcat(back, "\\n");
             strcat(front, back);
-            front[strlen(front)] = '\n';
-        
-        } else if (*inp == 't') {
+            front[strlen(front)] = '\n';                    // Adding new line at the end of the string 
+
+        } else if (*inp == 't') {                           // File case
 
             int i = 0;
-            printf("Please enter the file name to send: ");
-            while ((c = getchar()) != '\n')
+            printf("Please enter the file name to send: ");  // Prompt for the file name
+            while ((c = getchar()) != '\n')                  // Getting string input until new line
                 buffer[i++] = c;
             strcpy(filename, buffer);
-            strcpy(front, "FILE\\n");
+            strcpy(front, "FILE\\n");                        // Concatenating string to send FILE\nxxxx\n
             strcpy(back, buffer);
             strcat(back, "\\n");
             strcat(front, back);
-            front[strlen(front)] = '\n';
+            front[strlen(front)] = '\n';                     // Adding new line at the end of the string
         
         } else if (*inp == 'q') {
-            printf("session closed.");
+            printf("session closed.");                       // Close if user enter q in initial prompt
             break;
         } else {
-            printf("close");
+            printf("close");                                 // close by default
             break;
         }
         // printf("%s\n", front);
 
-        n = write(sockfd,front,strlen(front));
+        n = write(sockfd,front,strlen(front));              // Writing the string stream to the socket
         if (n < 0) 
              error("ERROR writing to socket");
         
-        read(sockfd, buffer, MAX_LINE-1);
+        read(sockfd, buffer, MAX_LINE-1);                   // Reading back from the socket into buffer
 
         char size_buff[10];
         int k = 0;
-        while ((d = buffer[k]) != '\n') 
+        while ((d = buffer[k]) != '\n')                     // Declaring temporary variable to calculate size
             size_buff[k++] = d;
     
         
-        printf("%s\n",buffer);
+        printf("%s\n",buffer);                              // Printing the buffer read from the socket     
 
 
-        int size_of_file = atoi(size_buff);
+        int size_of_file = atoi(size_buff);                 // Temporary variable that has size parameters
 
 
-        if (*inp == 't') {
+        if (*inp == 't') {                                  // For file case
             // buffer = strtok(buffer, "\n");
-            write_ptr = fopen(filename, "wb");
+            write_ptr = fopen(filename, "wb");              // operning the file pointer for binary write
             if (write_ptr) 
-                fwrite(buffer, size_of_file, 1, write_ptr);
+                fwrite(buffer, size_of_file, 1, write_ptr); // Write buffer to the file until reached at end
         }
 
 
@@ -198,7 +198,7 @@ int main(int argc, char *argv[]) {
         break;
     }
 
-    if ( close(conn_s) < 0 ) {
+    if ( close(conn_s) < 0 ) {                              // Closing connection after all the tasks
         fprintf(stderr, "ECHOSERV: Error calling close()\n");
         exit(EXIT_FAILURE);
     } else {
@@ -216,7 +216,7 @@ int main(int argc, char *argv[]) {
 
 int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
 
-    *szAddress = argv[1];
+    *szAddress = argv[1];                                   // Setting defauly port and address for the client
 
     *szPort = argv[2];
 
@@ -240,20 +240,8 @@ int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
     return 0;
 }
 
-void error(char *msg)
+void error(char *msg)                                       // Error msg function to print errors            
 {
     perror(msg);
     exit(0);
 }
-/*
-printf("Breakpoint");
-
-                int i = strlen(send_buff);
-                while ((d = getchar()) != '\n')
-                    send_buff[i++] = d;
-
-                send_buff[strlen(send_buff)] = '\n';
-
-                strcat(send_buff, new_buff);
-
-*/
