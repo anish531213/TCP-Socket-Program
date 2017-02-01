@@ -117,10 +117,13 @@ int main(int argc, char *argv[]) {
 
     while (1) {
 
-        // printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
-        // scanf("%c", inp);
+        printf("Please enter 's' to input a sting, 't' to input a file and 'q' to quit: ");
+        
+        int j = 0;
+        while ((c = getchar()) != '\n')
+            inp[j++] = c;
 
-        // if (*inp == 's') {
+        if (*inp == 's') {
 
             int i = 0;
             printf("Please enter a string to continue: ");
@@ -133,13 +136,26 @@ int main(int argc, char *argv[]) {
             strcat(front, back);
             front[strlen(front)] = '\n';
         
-        // } else if (*inp == 'q') {
-        //     printf("session closed.");
-        //     break;
-        // } else {
-        //     printf("close");
-        //     break;
-        // }
+        } else if (*inp == 't') {
+
+            int i = 0;
+            printf("Please enter the file name to send: ");
+            while ((c = getchar()) != '\n')
+                buffer[i++] = c;
+
+            strcpy(front, "FILE\\n");
+            strcpy(back, buffer);
+            strcat(back, "\\n");
+            strcat(front, back);
+            front[strlen(front)] = '\n';
+        
+        } else if (*inp == 'q') {
+            printf("session closed.");
+            break;
+        } else {
+            printf("close");
+            break;
+        }
         // printf("%s\n", front);
 
         n = write(sockfd,front,strlen(front));

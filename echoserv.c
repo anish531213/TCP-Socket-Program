@@ -33,6 +33,7 @@
 void error(char *msg);
 void handleCurrentConnection(int);
 void findSubstring(char[], char[], int);
+void findFileSubstring(char[], char[], int);
 void capitalize(char *word);
 
 
@@ -129,24 +130,47 @@ void handleCurrentConnection(int sockfd) {
     int n;
     char buffer[MAX_LINE];
     char new_buff[MAX_LINE-1];
-    char num[2];
+    char send_buff[MAX_LINE-1];
+    FILE *fptr;
+    // char send_buff2[MAX_LINE];
 
     Readline(sockfd, buffer, MAX_LINE-1);
     // n = read(sockfd,buffer,MAX_LINE-1);
     // if (n < 0) error("ERROR reading from socket");
 
-    findSubstring(buffer, buffer, 6);
+    if ((buffer[0] == 'C') && (buffer[1] == 'A') && (buffer[2] == 'P')) {
 
-    capitalize(buffer);
+        findSubstring(buffer, buffer, 6);
 
-    int length = strlen(buffer);
+        capitalize(buffer);
 
-    sprintf(num, "%d", length);
-    strcat(num, buffer);
+        int length = strlen(buffer);
 
-    printf("%s\n",buffer);
+        sprintf(send_buff, "%d", length);
+        strcat(send_buff, "\n");
+        strcat(send_buff, buffer);
+        //strcpy(new_buff, num);
 
-    n = write(sockfd, buffer, strlen(buffer));
+    } else if (buffer[0] == 'F') {
+        
+        findFileSubstring(buffer, buffer, 7);
+
+        if ( access(buffer, F_OK) != -1) {    // Checks if the file is present 
+            fptr = fopen(buffer, "r");
+            while(!feof(fptr)) {
+                fgets(new_buff, MAX_LINE-1, fptr);
+                strcat(send_buff, new_buff);
+            }
+
+        } else {
+            strcpy(send_buff, "9\nNOT FOUND");
+        }
+
+    }
+
+    printf("%s\n", send_buff);
+
+    n = write(sockfd, send_buff, strlen(send_buff));
 
     if (n < 0) error("ERROR writing to socket");
 }
@@ -170,6 +194,20 @@ void findSubstring(char g[], char p[], int diff) {
     int length = strlen(p)-8;
     int i;
     for (i=0; i<length; i++) {
+        if (g[i] == '\n'){
+            g[i] = '\0';
+        }
+
+        g[i] = p[i+diff-1];
+    }
+    g[i] = '\0';
+}
+
+void findFileSubstring(char g[], char p[], int diff) {
+
+    int length = strlen(p)-8;
+    int i;
+    for (i=0; i<length-1; i++) {
         if (g[i] == '\n'){
             g[i] = '\0';
         }
