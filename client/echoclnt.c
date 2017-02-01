@@ -114,6 +114,8 @@ int main(int argc, char *argv[]) {
     char back[MAX_LINE-1];
     char filename[MAX_LINE-1];
     temp = buffer;
+
+    char new_buffer[MAX_LINE];
     int sockfd = conn_s;
    
     size_t      n, ns, nleft;
@@ -166,7 +168,7 @@ int main(int argc, char *argv[]) {
         if (n < 0) 
              error("ERROR writing to socket");
         
-        read(sockfd,buffer,MAX_LINE-1);
+        read(sockfd, buffer, MAX_LINE-1);
 
         char size_buff[10];
         int k = 0;
@@ -179,10 +181,12 @@ int main(int argc, char *argv[]) {
 
         int size_of_file = atoi(size_buff);
 
-        if (size_of_file > 50) {
+
+        if (*inp == 't') {
+            // buffer = strtok(buffer, "\n");
             write_ptr = fopen(filename, "wb");
             if (write_ptr) 
-                fwrite(buffer, sizeof(buffer), 1, write_ptr);
+                fwrite(buffer, size_of_file, 1, write_ptr);
         }
 
 
@@ -241,3 +245,15 @@ void error(char *msg)
     perror(msg);
     exit(0);
 }
+/*
+printf("Breakpoint");
+
+                int i = strlen(send_buff);
+                while ((d = getchar()) != '\n')
+                    send_buff[i++] = d;
+
+                send_buff[strlen(send_buff)] = '\n';
+
+                strcat(send_buff, new_buff);
+
+*/
