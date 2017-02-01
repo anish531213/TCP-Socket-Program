@@ -17,6 +17,8 @@
 
 #include "helper.h"           /*  our own helper functions  */
 
+#include <sys/stat.h>
+
 #include "helper.c"
 #include <string.h>
 
@@ -131,6 +133,8 @@ void handleCurrentConnection(int sockfd) {
     char buffer[MAX_LINE];
     char new_buff[MAX_LINE-1];
     char send_buff[MAX_LINE-1];
+    int size;
+    char fsize[2];
     FILE *fptr;
     // char send_buff2[MAX_LINE];
 
@@ -155,10 +159,21 @@ void handleCurrentConnection(int sockfd) {
         
         findFileSubstring(buffer, buffer, 7);
 
-        if ( access(buffer, F_OK) != -1) {    // Checks if the file is present 
-            fptr = fopen(buffer, "r");
-            while(!feof(fptr)) {
-                fgets(new_buff, MAX_LINE-1, fptr);
+        if ( access(buffer, F_OK) != -1) {   // Checks if the file is present 
+
+            fptr = fopen(buffer, "rb");
+
+            fseek(fptr, 0L, SEEK_END);
+            size = ftell(fptr);
+            rewind(fptr);
+
+            sprintf(send_buff, "%d", size);
+            strcat(send_buff, "\n");
+            strcat(send_buff, new_buff);
+
+            while(!feof(fptr))
+            {
+                fgets(new_buff, MAX_LINE, fptr);
                 strcat(send_buff, new_buff);
             }
 
