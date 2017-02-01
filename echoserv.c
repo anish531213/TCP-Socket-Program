@@ -130,9 +130,10 @@ void handleCurrentConnection(int sockfd) {
     char buffer[MAX_LINE];
     char new_buff[MAX_LINE-1];
     char num[2];
-          
-    n = read(sockfd,buffer,MAX_LINE-1);
-    if (n < 0) error("ERROR reading from socket");
+
+    Readline(sockfd, buffer, MAX_LINE-1);
+    // n = read(sockfd,buffer,MAX_LINE-1);
+    // if (n < 0) error("ERROR reading from socket");
 
     findSubstring(buffer, buffer, 6);
 
@@ -143,9 +144,9 @@ void handleCurrentConnection(int sockfd) {
     sprintf(num, "%d", length);
     strcat(num, buffer);
 
-    printf("%s\n",num);
+    printf("%s\n",buffer);
 
-    n = write(sockfd, num, strlen(num));
+    n = write(sockfd, buffer, strlen(buffer));
 
     if (n < 0) error("ERROR writing to socket");
 }
@@ -166,9 +167,13 @@ void capitalize(char buff[]) {
 
 void findSubstring(char g[], char p[], int diff) {
 
-    int length = strlen(g)-8;
+    int length = strlen(p)-8;
     int i;
     for (i=0; i<length; i++) {
+        if (g[i] == '\n'){
+            g[i] = '\0';
+        }
+
         g[i] = p[i+diff-1];
     }
     g[i] = '\0';

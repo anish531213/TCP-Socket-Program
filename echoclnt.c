@@ -122,13 +122,16 @@ int main(int argc, char *argv[]) {
 
         // if (*inp == 's') {
 
+            int i = 0;
             printf("Please enter a string to continue: ");
-            fgets(buffer, MAX_LINE, stdin);
+            while ((c = getchar()) != '\n')
+                buffer[i++] = c;
 
-            strcat(front, "CAP\\n");
-            strcat(back, buffer);
+            strcpy(front, "CAP\\n");
+            strcpy(back, buffer);
             strcat(back, "\\n");
             strcat(front, back);
+            front[strlen(front)] = '\n';
         
         // } else if (*inp == 'q') {
         //     printf("session closed.");
@@ -137,7 +140,7 @@ int main(int argc, char *argv[]) {
         //     printf("close");
         //     break;
         // }
-
+        // printf("%s\n", front);
 
         n = write(sockfd,front,strlen(front));
         if (n < 0) 
